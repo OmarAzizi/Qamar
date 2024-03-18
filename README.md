@@ -1,5 +1,5 @@
 # clox
-A while ago I implemented Lox language from the book [Crafting Interpreters](https://craftinginterpreters.com/) in Java and shared it on [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
+A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
 
 ## Why clox?
 The first part of the book mainly focused on teaching the reader how a programming language might be implemented, so it neglected the low-level details (.e.g Code generation & Virtual machines). 
