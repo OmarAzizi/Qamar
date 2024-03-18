@@ -30,5 +30,5 @@ void freeChunk(Chunk* chunk) {
 
 int addConstant(Chunk* chunk, Value value) {
     writeValueArray(&chunk->constants, value);
-    return chunk->constants.count - 1; // return the undex where the constant was appedned so we can locate it later
+    return chunk->constants.count - 1; // return the index where the constant was appedned so we can locate it later
 }
