@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "debug.h"
+#include "value.h"
 
 void disassembleChunk(Chunk* chunk, const char *name) {
     printf("== %s ==\n", name); 
@@ -12,11 +13,26 @@ static int simpleInstruction(const char* name, int offset) {
     return offset + 1;
 }
 
+static int constantInstruction(const char* name, Chunk* chunk, int offset) {
+    uint8_t constant = chunk->code[offset + 1]; // accessing index of the constant
+    printf("%-16s %d '", name, constant);
+    printValue(chunk->constants.values[constant]);
+    printf("'\n");
+
+    return offset + 2;
+}
+
+/*
+    disassembleInstruction returns a number to tell the caller the 
+    offset of the beginning of the next instruction
+*/
 int disassembleInstruction(Chunk* chunk, int offset) {
     printf("%04d ", offset); // prints the byte offset of each instruction
 
     uint8_t instruction = chunk->code[offset]; // reads single byte from bytecode
     switch (instruction) {
+        case OP_CONSTANT:
+            return constantInstruction("OP_CONSTANT", chunk, offset);
         case OP_RETURN:
             return simpleInstruction("OP_RETURN", offset);
         default:
