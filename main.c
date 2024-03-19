@@ -7,10 +7,10 @@ int main(int argc, char** argv) {
     initChunk(&chunk);
 
     int constant = addConstant(&chunk, 1.2); // will add a constant to the values array of chunk and return its index
-    writeChunk(&chunk, OP_CONSTANT);
-    writeChunk(&chunk, constant); // writing the index of the constant to the chunk
+    writeChunk(&chunk, OP_CONSTANT, 123);
+    writeChunk(&chunk, constant, 123); // writing the index of the constant to the chunk
 
-    writeChunk(&chunk, OP_RETURN);
+    writeChunk(&chunk, OP_RETURN, 123);
   
     disassembleChunk(&chunk, "test chunk");
 
