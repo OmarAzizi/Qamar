@@ -8,3 +8,6 @@ So the language implemented in the first part is heavily dependant on JVM, becau
 
 ## About This Repository
 In this repositry I will be going through the second part of the book (starting at **chapter 14**), which implements the same language in the first part, but this time it does it in C and it implements a Virtual machine similar to JDK, and try to document my journey.
+
+### My Current Progress
+So far, I've completed the first chapter, during which I implemented the Bytecode along with a couple of instructions. Additionally, I created a simple disassembler that takes those chunks and disassembles them for debugging purposes.
