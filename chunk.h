@@ -15,6 +15,7 @@
     (universally shortened to opcode)
 */
 typedef enum {
+    OP_CONSTANT,
     OP_RETURN, // return instruction
 } OpCode;
 
