@@ -27,12 +27,13 @@ typedef struct {
     int count;
     int capacity;
     uint8_t* code;
+    int* lines; // This array will keep track of line information
     ValueArray constants;
 } Chunk;
 
 void initChunk(Chunk* chunk);
 void freeChunk(Chunk* chunk);
-void writeChunk(Chunk* chunk, uint8_t byte);
+void writeChunk(Chunk* chunk, uint8_t byte, int line);
 
 /* This is a convinence method to add a new constant to the chunk */
 int addConstant(Chunk* chunk, Value value);
