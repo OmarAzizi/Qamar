@@ -12,4 +12,5 @@ In this repository, I will be going through the second part of the book (startin
 ## My Current Progress
 ### Chapter 1
 So far, I've completed the first chapter, during which I implemented the Bytecode along with a couple of instructions. Additionally, I created a simple disassembler that takes those chunks and disassembles them for debugging purposes. This photo shows a hardcoded example in main for the disassembly of the instructions:
+
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/8b08d85a-745b-495e-8bcd-517226ce5e16)
