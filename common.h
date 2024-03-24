@@ -5,4 +5,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/* 
+    This is a flag that will add diagnostic logging to help debugging the VM
+*/
+#define DEBUG_TRACE_EXECUTION 
+
 #endif
