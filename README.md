@@ -18,4 +18,4 @@ So far, I've implemented the Bytecode along with a couple of instructions. Addit
 ### A Virtual Machine
 I have also developed the Virtual Machine upon which the interpreter operates. Additionally, I have introduced new Bytecode instructions supported by a disassembler and integrated them into the interpreter loop. As a result, I am now able to evaluate complex arithmetic expressions seamlessly. This screenshot shows a disassembled chunk of bytecode calculating the expression `-((1.2 + 3.4) / 5.6)`
 
-![image](https://github.com/OmarAzizi/clox/assets/110500643/a0dcf82c-cfdf-4637-9043-dfc014c8236f)
+![image](https://github.com/OmarAzizi/clox/assets/110500643/cba5db4c-2a1f-4a9a-b25d-beb85acc580c)
