@@ -15,5 +15,5 @@ So far, I've implemented the Bytecode along with a couple of instructions. Addit
 
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/a3101208-9e3b-4ab4-8bca-00531782d7f6)
 
-### Virtual Machine
-
+### A Virtual Machine
+I have also developed the Virtual Machine upon which the interpreter operates. Additionally, I have introduced new Bytecode instructions supported by a disassembler and integrated them into the interpreter loop. As a result, I am now able to evaluate complex arithmetic expressions seamlessly.
