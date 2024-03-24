@@ -14,8 +14,6 @@ int main(int argc, char** argv) {
     writeChunk(&chunk, constant, 123); // writing the index of the constant to the chunk
     writeChunk(&chunk, OP_RETURN, 123);
   
-    disassembleChunk(&chunk, "test chunk");
-    
     interpret(&chunk); // telling the VM interpret a chunk of bytecode 
 
     freeVM();
