@@ -1,15 +1,29 @@
 #include <stdio.h>
 
 #include "chunk.h"
+#include "debug.h"
 #include "value.h"
 #include "vm.h"
 
 VM vm;
 
+static void resetStack() { vm.stackTop = vm.stack; }
+
 void initVM() {
+    resetStack();
 }
 
 void freeVM() {
+}
+
+void push(Value value) {
+    *vm.stackTop = value; // store value
+    ++vm.stackTop;        // increment 'top' ptr
+}
+
+Value pop() {
+    --vm.stackTop;        // decrement 'top' ptr
+    return *vm.stackTop;  // return popped value
 }
 
 static InterpretResult run() {
@@ -17,6 +31,11 @@ static InterpretResult run() {
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 
     for (;;) {
+
+#ifdef DEBUG_TRACE_EXECUTION
+        // When this flag is defined the VM disassembles and prints each instruction right before executing it    
+        disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
+#endif
         uint8_t instruction;
         
         // Decoding (dispatching) the instruction
