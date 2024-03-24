@@ -33,6 +33,15 @@ static InterpretResult run() {
     for (;;) {
 
 #ifdef DEBUG_TRACE_EXECUTION
+        // Stack Tracing (Printing contents of the VM's stack from bottom up)
+        printf("            ");
+        for (Value* slot = vm.stack; slot < vm.stackTop; ++slot) {
+            printf("[");
+            printValue(*slot);
+            printf("]");
+        }
+        printf("\n");
+
         // When this flag is defined the VM disassembles and prints each instruction right before executing it    
         disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
@@ -43,11 +52,13 @@ static InterpretResult run() {
             // The body of each case implements that opcode’s behavior.
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
-                printValue(constant);
-                printf("\n");
+                push(constant);
                 break;
             }
+            case OP_NEGATE: push(-pop()); break;
             case OP_RETURN: {
+                printValue(pop());
+                printf("\n");
                 return INTERPRET_OK;
             }
         }
