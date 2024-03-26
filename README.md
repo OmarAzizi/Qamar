@@ -22,10 +22,10 @@ I have also developed the Virtual Machine upon which the interpreter operates. A
 
 ### Scanning (Lexing)
 After completing a significant portion of the backend for the compiler, I have now begun working on the frontend. Today, I focused on the initial component essential for a compiler's frontend: the Scanner (also known as the Lexer). I successfully implemented all the lexical grammars, resulting in an artifact capable of processing source code and generating corresponding tokens.
-<br>
-
+<br><br>
 This screenshot shows the output of the lexer where:
 - `1` is the line number
 - `|` means that this token is also at line 1
 - `36` being `TOKEN_VAR` in defined in the `TokenType` Enum in [scanner.h](https://github.com/OmarAzizi/clox/blob/main/scanner.h)
+- `19`, `13`, `21`, `10`, `8`, and `39` being `TOKEN_IDENTIFIER`, `TOKEN_EQUAL`, `TOKEN_NUMBER`, `TOKEN_STAR`, `TOKEN_SEMICOLON`, and `TOKEN_EOF` respectively
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/97d4fd60-d601-4162-af51-2d7edd77d56d)
