@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
-SOURCE = main.c chunk.c memory.c debug.c value.c vm.c
+SOURCE = main.c chunk.c memory.c debug.c value.c vm.c compiler.c scanner.c
 OBJECTS = $(SOURCE:.c=.o)
 
 build: $(OBJECTS)
