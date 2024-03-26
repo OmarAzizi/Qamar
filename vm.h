@@ -29,7 +29,7 @@ void freeVM();
     The 'interpret' function will be the VM's entrypoint. 
     The VM runs the chunk and then responds with an enum value.
 */
-InterpretResult interpret(Chunk* chunk); 
+InterpretResult interpret(const char* source); 
 
 /* Defining the stack protocol for the VM */
 void push(Value value);
