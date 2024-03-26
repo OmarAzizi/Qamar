@@ -19,3 +19,6 @@ So far, I've implemented the Bytecode along with a couple of instructions. Addit
 I have also developed the Virtual Machine upon which the interpreter operates. Additionally, I have introduced new Bytecode instructions supported by a disassembler and integrated them into the interpreter loop. As a result, I am now able to evaluate complex arithmetic expressions seamlessly. This screenshot shows a disassembled chunk of bytecode calculating the expression `-((1.2 + 3.4) / 5.6)`
 
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/cba5db4c-2a1f-4a9a-b25d-beb85acc580c)
+
+### Scanning (Lexing)
+After completing a significant portion of the backend for the compiler, I have now begun working on the frontend. Today, I focused on the initial component essential for a compiler's frontend: the Scanner (also known as the Lexer). I successfully implemented all the lexical grammars, resulting in an artifact capable of processing source code and generating corresponding tokens.
