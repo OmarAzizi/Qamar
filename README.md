@@ -23,4 +23,4 @@ I have also developed the Virtual Machine upon which the interpreter operates. A
 ### Scanning (Lexing)
 After completing a significant portion of the backend for the compiler, I have now begun working on the frontend. Today, I focused on the initial component essential for a compiler's frontend: the Scanner (also known as the Lexer). I successfully implemented all the lexical grammars, resulting in an artifact capable of processing source code and generating corresponding tokens.
 
-![image](https://github.com/OmarAzizi/clox/assets/110500643/f1934414-1bff-4fd1-ad9e-14168814a8e7)
+![image](https://github.com/OmarAzizi/clox/assets/110500643/97d4fd60-d601-4162-af51-2d7edd77d56d)
