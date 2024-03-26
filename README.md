@@ -27,5 +27,5 @@ After completing a significant portion of the backend for the compiler, I have n
 This screenshot shows the output of the lexer where:
 - `1` is the line number
 - `|` means that this token is also at line 1
-- `36` being `TOKEN_VAR` in defined in the `TokenType` Enum in (scanner.h)[https://github.com/OmarAzizi/clox/blob/main/scanner.h]
+- `36` being `TOKEN_VAR` in defined in the `TokenType` Enum in [scanner.h](https://github.com/OmarAzizi/clox/blob/main/scanner.h)
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/97d4fd60-d601-4162-af51-2d7edd77d56d)
