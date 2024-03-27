@@ -32,9 +32,12 @@ This screenshot shows the output of the lexer where:
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/97d4fd60-d601-4162-af51-2d7edd77d56d)
 
 ### Compiling Expressions
-Today I wrote the final segment of the VM's execution pipeline, and a compiler that parses high-level source code using Vaughan Pratt’s “top-down operator precedence parsing” and outputs low-level seriec of instructions (Bytecode instructions) that we can execute. The things I can parse and execute are:
+Today, I completed the final segment of the VM's execution pipeline and developed a compiler capable of parsing high-level source code using Vaughan Pratt’s “top-down operator precedence parsing” technique. The compiler outputs a series of low-level instructions (Bytecode instructions) that can be executed by the VM. The types of instructions I can parse and execute include:
 - Number literals
 - Parantheses for grouping
 - Unary Expressions
 - The Four Horsemen of the Arithmetic +, -, *, /
+
+So basically now I've got myself an over engineered calculator
+
 
