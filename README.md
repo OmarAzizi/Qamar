@@ -26,7 +26,7 @@ After completing a significant portion of the backend for the compiler, I have n
 This screenshot shows the output of the lexer where:
 - `1` is the line number
 - `|` means that this token is also at line 1
-- `36` being `TOKEN_VAR` in defined in the `TokenType` Enum in [scanner.h](https://github.com/OmarAzizi/clox/blob/main/scanner.h)
+- `36` being `TOKEN_VAR` defined in the `TokenType` Enum in [scanner.h](https://github.com/OmarAzizi/clox/blob/main/scanner.h)
 - `19`, `13`, `21`, `10`, `8`, and `39` being `TOKEN_IDENTIFIER`, `TOKEN_EQUAL`, `TOKEN_NUMBER`, `TOKEN_STAR`, `TOKEN_SEMICOLON`, and `TOKEN_EOF` respectively
 
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/97d4fd60-d601-4162-af51-2d7edd77d56d)
@@ -34,10 +34,11 @@ This screenshot shows the output of the lexer where:
 ### Compiling Expressions
 Today, I completed the final segment of the VM's execution pipeline and developed a compiler capable of parsing high-level source code using Vaughan Pratt’s “top-down operator precedence parsing” technique. The compiler outputs a series of low-level instructions (Bytecode instructions) that can be executed by the VM. The types of instructions I can parse and execute include:
 - Number literals
-- Parantheses for grouping
+- Parentheses for grouping
 - Unary Expressions
 - The Four Horsemen of the Arithmetic +, -, *, /
 
-So basically now I've got myself an over engineered calculator
+So basically now I've got myself an over-engineered calculator
 
+![image](https://github.com/OmarAzizi/clox/assets/110500643/1040976c-dd01-43de-b2db-dabcbf589f79)
 
