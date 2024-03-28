@@ -42,3 +42,5 @@ So basically now I've got myself an over-engineered calculator
 
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/1040976c-dd01-43de-b2db-dabcbf589f79)
 
+### New Datatypes and Operators
+
