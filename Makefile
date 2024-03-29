@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall 
-SOURCE = main.c chunk.c memory.c debug.c value.c vm.c compiler.c scanner.c
+SOURCE = main.c chunk.c memory.c debug.c value.c vm.c compiler.c scanner.c object.c
 OBJECTS = $(SOURCE:.c=.o)
 
 build: $(OBJECTS)
@@ -10,4 +10,7 @@ build: $(OBJECTS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+	rm -rf *.o *~
+
+clean-all:
 	rm -rf *.o *~ clox
