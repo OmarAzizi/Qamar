@@ -7,10 +7,11 @@
 #define STACK_MAX 256
 
 typedef struct {
-    Chunk* chunk; // storing the chunk of bytecode 
-    uint8_t* ip;  // this pointer will keep track of where we are in the bytecode array (instruction pointer OR program counter)
+    Chunk* chunk; /* storing the chunk of bytecode */
+    uint8_t* ip;  /* this pointer will keep track of where we are in the bytecode array (instruction pointer OR program counter) */
     Value stack[STACK_MAX];
     Value* stackTop;
+    Obj* objects; /* The VM stors a pointer to the head of the Obj's list */
 } VM;
 
 /*
@@ -21,6 +22,8 @@ typedef enum {
     INTERPRET_COMPILE_ERROR,
     INTERPRET_RUNTIME_ERROR
 } InterpretResult;
+
+extern VM vm;
 
 void initVM();
 void freeVM();
