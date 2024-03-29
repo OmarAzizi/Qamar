@@ -28,6 +28,7 @@ typedef enum {
 
 struct Obj {
     ObjType type;
+    struct Obj* next; /* The Obj iself will be a linked-list (it helps with garbage collection) */
 };
 
 struct ObjString {
