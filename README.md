@@ -43,6 +43,9 @@ So basically now I've got myself an over-engineered calculator
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/1040976c-dd01-43de-b2db-dabcbf589f79)
 
 ### New Datatypes and Operators
-So far, our language has only had one data type (double), represented as the `typedef` value. However, in the past few days, I've been working on implementing new data types. I successfully added three new data types: `NIL`, `BOOL`, and `STRING`. Additionally, I've included some helper macros to facilitate type-checking and conversion between the language's representation of these data types and their C counterparts.
+So far, our language has only had one data type (double), represented as the `typedef` **Value**. However, in the past few days, I've been working on implementing new data types. I successfully added three new data types: `NIL`, `BOOL`, and `STRING`. Additionally, I've included some helper macros to facilitate type-checking and conversion between the language's representation of these data types and their C counterparts.
 
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/7fdcbeb9-b64f-40fb-bc3e-1bbf8aa241a2)
+
+Additionally, I've introduced several new operators to handle operations associated with the new data types. These include logical operators such as `<`, `<=`, `>`, and `==`, among others. Furthermore, I've implemented **string concatenation** using the `+` operator.
+
