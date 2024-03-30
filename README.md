@@ -49,3 +49,4 @@ So far, our language has only had one data type (double), represented as the `ty
 
 Additionally, I've introduced several new operators to handle operations associated with the new data types. These include logical operators such as `<`, `<=`, `>`, and `==`, among others. Furthermore, I've implemented **string concatenation** using the `+` operator.
 
+![image](https://github.com/OmarAzizi/clox/assets/110500643/c0b671e9-17da-4b5e-9ee4-3c1c6b8137b2)
