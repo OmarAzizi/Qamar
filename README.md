@@ -45,4 +45,4 @@ So basically now I've got myself an over-engineered calculator
 ### New Datatypes and Operators
 So far, our language has only had one data type (double), represented as the `typedef` value. However, in the past few days, I've been working on implementing new data types. I successfully added three new data types: `NIL`, `BOOL`, and `STRING`. Additionally, I've included some helper macros to facilitate type-checking and conversion between the language's representation of these data types and their C counterparts.
 
-![Uploading image.png…]()
+![image](https://github.com/OmarAzizi/clox/assets/110500643/7fdcbeb9-b64f-40fb-bc3e-1bbf8aa241a2)
