@@ -1,8 +1,10 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "memory.h"
 #include "object.h"
+#include "table.h"
 #include "value.h"
 #include "vm.h"
 
@@ -19,22 +21,49 @@ static Obj* allocateObject(size_t size, ObjType type) {
     return object;
 }
 
-static ObjString* allocateString(char* chars, int length) {
+static ObjString* allocateString(char* chars, int length, uint32_t hash) {
     ObjString* string = ALLOCATE_OBJ(ObjString, OBJ_STRING);
     string->length = length;
     string->chars = chars;
+    string->hash = hash;
+    tableSet(&vm.strings, string, NIL_VAL);
     return string;
 }
 
+/*
+    This function implements the FNV-1a hash algorithm
+*/
+static uint32_t hashString(const char* key, int length) {
+    uint32_t hash = 0x811C9DC5;  /* Initial hash */
+    for (int i = 0; i < length; ++i) {
+        hash ^= (uint8_t)key[i]; /* Bitwise XOR */
+        hash *= 0x01000193;
+    }
+    return hash;
+}
+
 ObjString* takeString(char* chars, int length) {
-    return allocateString(chars, length);
+    uint32_t hash = hashString(chars, length);
+    ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
+    
+    if (interned != NULL) {
+        FREE_ARRAY(char, chars, length + 1);
+        return interned;
+    }
+
+    return allocateString(chars, length, hash);
 }
 
 ObjString* copyString(const char* chars, int length) {
+    uint32_t hash = hashString(chars, length);
+    ObjString* interned = tableFindString(&vm.strings, chars, length, hash);
+    
+    if (interned != NULL) return interned;
+
     char* heapChars = ALLOCATE(char, length + 1);
     memcpy(heapChars, chars, length);
     heapChars[length] = '\0';
-    return allocateString(heapChars, length);
+    return allocateString(heapChars, length, hash);
 }
 
 void printObject(Value value) {

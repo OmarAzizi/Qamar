@@ -35,6 +35,7 @@ struct ObjString {
     Obj obj;
     int length;
     char* chars;
+    uint32_t hash; /* Each ObjString will store a hash, this will help in the implementation of hash tables*/
 };
 
 ObjString* takeString(char* chars, int length);
