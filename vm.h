@@ -3,6 +3,7 @@
 
 #include "chunk.h"
 #include "value.h"
+#include "table.h"
 
 #define STACK_MAX 256
 
@@ -11,6 +12,7 @@ typedef struct {
     uint8_t* ip;  /* this pointer will keep track of where we are in the bytecode array (instruction pointer OR program counter) */
     Value stack[STACK_MAX];
     Value* stackTop;
+    Table strings;
     Obj* objects; /* The VM stors a pointer to the head of the Obj's list */
 } VM;
 
