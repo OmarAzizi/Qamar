@@ -14,7 +14,7 @@ void initTable(Table* table) {
     table->entries = NULL;
 }
 
-void freeTable(Table *table) {
+void freeTable(Table* table) {
     FREE_ARRAY(Entry, table->entries, table->capacity);
     initTable(table);
 }
