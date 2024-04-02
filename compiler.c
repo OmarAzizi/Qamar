@@ -5,7 +5,9 @@
 #include "chunk.h"
 #include "common.h"
 #include "compiler.h"
+#include "object.h"
 #include "scanner.h"
+#include "value.h"
 
 #ifdef DEBUG_PRINT_CODE
 #include "debug.h"
@@ -141,7 +143,9 @@ static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 static void statement();
 static void decleration();
-
+static uint8_t identifierConstant(Token* name);
+static uint8_t parseVariable(const char* errorMessage);
+static void defineVariable(uint8_t global);
 
 static void binary() {
     TokenType operatorType = parser.previous.type;
@@ -177,6 +181,23 @@ static void literal() {
 
 static void expression() {
     parsePrecedence(PREC_ASSIGNMENT);
+}
+
+static void varDecleration() {
+    /* The `var` keyword is followed by a variable name that's compiled by `parseVariable` */
+    uint8_t global = parseVariable("Expect variable name.");
+
+/*
+    Then we look for an = followed by an initializer expression. If the user doesn’t initialize the variable, 
+    the compiler implicitly initializes it to nil by emitting an OP_NIL instruction.
+*/
+    if (match(TOKEN_EQUAL)) {
+        expression();
+    } else {
+        emitByte(OP_NIL);
+    }
+    consume(TOKEN_SEMICOLON, "Expect ';' after variable decleration."); /* statement should be terminated using a semicolon */
+    defineVariable(global);
 }
 
 /*
@@ -230,7 +251,12 @@ static void synchronize() {
 }
 
 static void decleration() {
-    statement();
+    if (match(TOKEN_VAR)) {
+        varDecleration(); 
+    } else {
+        statement();
+    }
+
     if (parser.panicMode) synchronize();
 }
 
@@ -331,6 +357,22 @@ static void parsePrecedence(Precedence precedence) {
         ParseFn infixRule = getRule(parser.previous.type)->infix;
         infixRule();
     }
+}
+
+/*
+    This function takes the given token and adds its lexeme to the chunk’s constant table as a string. It then returns the index of that constant in the constant table.
+*/
+static uint8_t identifierConstant(Token* name) {
+    return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
+}
+
+static uint8_t parseVariable(const char* errorMessage) {
+    consume(TOKEN_IDENTIFIER, errorMessage);
+    return identifierConstant(&parser.previous);
+}
+
+static void defineVariable(uint8_t global) {
+    emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
 static ParseRule* getRule(TokenType type) {
