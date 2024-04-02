@@ -198,8 +198,40 @@ static void printStatement() {
     emitByte(OP_PRINT); 
 }
 
+/*
+    If we hit a compile error while parsing the previous statement, we enter panic mode. 
+    When that happens, after the statement we start synchronizing
+*/
+static void synchronize() {
+    parser.panicMode = false;
+
+    while (parser.current.type != TOKEN_EOF) {
+
+/*
+        We skip tokens indiscriminately until we reach something that looks like a statement boundary.
+*/
+        if (parser.previous.type == TOKEN_SEMICOLON) return;
+        switch (parser.current.type) {
+            case TOKEN_CLASS:
+            case TOKEN_FUN:
+            case TOKEN_VAR:
+            case TOKEN_FOR:
+            case TOKEN_IF:
+            case TOKEN_WHILE:
+            case TOKEN_PRINT:
+            case TOKEN_RETURN:
+                return;
+
+            default: 
+                ; // Do nothing
+        }
+        advance();
+    }
+}
+
 static void decleration() {
     statement();
+    if (parser.panicMode) synchronize();
 }
 
 static void statement() {
