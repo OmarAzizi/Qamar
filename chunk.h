@@ -28,6 +28,7 @@ typedef enum {
     OP_DIVIDE,
     OP_NOT,    // logical not (!true == false)
     OP_NEGATE, // Unary negation (a = 12 | -a == -12)
+    OP_PRINT,
     OP_RETURN, // return instruction
 } OpCode;
 
