@@ -180,12 +180,22 @@ static void expression() {
 }
 
 /*
-    if we did match the `print` token, then we compile the rest of the statement here
+    An "expression statement" is simply an expression followed by a semicolon
+    Semanitcally, an expression statement evaluates the exptession and discard the results.
+*/
+static void expressionStatement() {
+    expression();
+    consume(TOKEN_SEMICOLON, "Expect ';' after expression.");
+    emitByte(OP_POP); /* Discarding the results */
+}
+
+/*
+    if we did match the `print` token, then we compile the rest of the statement here.
 */
 static void printStatement() {
     expression();
     consume(TOKEN_SEMICOLON, "Expect ';' after value.");
-    emitByte(OP_PRINT);
+    emitByte(OP_PRINT); 
 }
 
 static void decleration() {
@@ -195,6 +205,8 @@ static void decleration() {
 static void statement() {
     if (match(TOKEN_PRINT)) {
         printStatement();
+    } else {
+        expressionStatement();
     }
 }
 
