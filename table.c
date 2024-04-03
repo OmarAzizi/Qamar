@@ -28,20 +28,21 @@ static Entry* findEntry(Entry* entries, int capacity, ObjString* key) {
     Entry* tombstone = NULL;
 
     for (;;) {
-        Entry* entry = &entries[index]; 
+        Entry* entry = &entries[index];
         if (entry->key == NULL) {
             if (IS_NIL(entry->value)) {
-                /* Empty entry */
+                // Empty entry.
                 return tombstone != NULL ? tombstone : entry;
             } else {
-                /* We found a tombstone */
+                // We found a tombstone.
                 if (tombstone == NULL) tombstone = entry;
             }
         } else if (entry->key == key) {
-            /* We found the key */
+            // We found the key.
             return entry;
         }
-    }
+    index = (index + 1) % capacity;
+  }
 }
 
 static void adjustCapacity(Table* table, int capacity) {
@@ -59,7 +60,6 @@ static void adjustCapacity(Table* table, int capacity) {
         Entry* dest = findEntry(entries, capacity, entry->key);
         dest->key = entry->key;
         dest->value = dest->value;
-        ++table->count;
     }
     
     FREE_ARRAY(Entry, table->entries, table->capacity);
