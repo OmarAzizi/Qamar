@@ -34,10 +34,10 @@ static ObjString* allocateString(char* chars, int length, uint32_t hash) {
     This function implements the FNV-1a hash algorithm
 */
 static uint32_t hashString(const char* key, int length) {
-    uint32_t hash = 0x811C9DC5;  /* Initial hash */
+    uint32_t hash = 2166136261u;  /* Initial hash */
     for (int i = 0; i < length; ++i) {
-        hash ^= (uint8_t)key[i]; /* Bitwise XOR */
-        hash *= 0x01000193;
+        hash ^= (uint8_t)key[i];  /* Bitwise XOR */
+        hash *= 16777619;
     }
     return hash;
 }
