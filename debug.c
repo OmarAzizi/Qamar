@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "debug.h"
+#include "chunk.h"
 
 void disassembleChunk(Chunk* chunk, const char *name) {
     printf("== %s ==\n", name); 
@@ -44,6 +45,8 @@ int disassembleInstruction(Chunk* chunk, int offset) {
             return simpleInstruction("OP_FALSE", offset);
         case OP_POP:
             return simpleInstruction("OP_POP", offset);
+        case OP_GET_GLOBAL:
+            return constantInstruction("OP_GET_GLOBAL", chunk, offset);
         case OP_DEFINE_GLOBAL:
             return constantInstruction("OP_DEFINE_GLOBAL", chunk, offset);
         case OP_EQUAL:
