@@ -1,10 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "chunk.h"
 #include "compiler.h"
 #include "object.h"
+#include "common.h"
 #include "scanner.h"
 #include "value.h"
 
@@ -15,8 +17,8 @@
 typedef struct {
     Token current;
     Token previous;
-    bool hadError;
-    bool panicMode;
+    bool  hadError;
+    bool  panicMode;
 } Parser;
 
 /* Precedence levels as an Enum */
@@ -43,7 +45,19 @@ typedef struct {
     Precedence precedence;
 } ParseRule;
 
+typedef struct {
+    Token name;
+    int depth;  /* records the scope depth of the block where the local variable was declared */
+} Local;
+
+typedef struct {
+    Local locals[UINT8_COUNT];  /* Simple array of all locals that are in scope during each point in the compilation */
+    int localCount;             /* Tracks how many locals are in scope*/
+    int scopeDepth;             /* The number of bits surrounding the current but we are compiling */
+} Compiler;
+
 Parser parser;
+Compiler* current = NULL;
 Chunk* compilingChunk;
 
 static Chunk* currentChunk() { 
@@ -84,7 +98,7 @@ static void advance() {
 
 /*
     It’s similar to 'advance' in that it reads the next token. 
-    But it also validates that the token has an expected type
+    But it also validates that the token has an expected type.
 */
 static void consume(TokenType type, const char* message) {
     if (parser.current.type == type) {
@@ -130,11 +144,32 @@ static void emitConstant(Value value) {
     emitBytes(OP_CONSTANT, makeConstant(value));
 }
 
+static void initCompiler(Compiler* compiler) {
+    compiler->localCount = 0;
+    compiler->scopeDepth = 0;
+    current = compiler;
+}
+
 static void endCompiler() { 
     emitReturn(); 
 #ifdef DEBUG_PRINT_CODE
     if(!parser.hadError) disassembleChunk(currentChunk(), "code");
 #endif
+}
+
+static void beginScope() {
+    /* In order to “create” a scope, all we do is increment the current depth. */
+    ++current->scopeDepth;
+}
+
+static void endScope() {
+    --current->scopeDepth;
+
+    /* Deleting (discarding) the local variables in a specific scope aftr it ends */
+    while (current->localCount > 0 && current->locals[current->localCount - 1].depth > current->scopeDepth) {
+        emitByte(OP_POP);
+        --current->localCount;
+    }
 }
 
 static void expression();
@@ -182,6 +217,14 @@ static void expression() {
     parsePrecedence(PREC_ASSIGNMENT);
 }
 
+static void block() {
+    /* This keeps parsing declerations and statements untill it his a closing brace or enf of file token */
+    while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
+        decleration();
+    }
+    consume(TOKEN_RIGHT_BRACE, "Expect '}' after block.");
+}
+
 static void varDecleration() {
     /* The `var` keyword is followed by a variable name that's compiled by `parseVariable` */
     uint8_t global = parseVariable("Expect variable name.");
@@ -195,6 +238,7 @@ static void varDecleration() {
     } else {
         emitByte(OP_NIL);
     }
+
     consume(TOKEN_SEMICOLON, "Expect ';' after variable decleration."); /* statement should be terminated using a semicolon */
     defineVariable(global);
 }
@@ -262,6 +306,10 @@ static void decleration() {
 static void statement() {
     if (match(TOKEN_PRINT)) {
         printStatement();
+    } else if (match(TOKEN_LEFT_BRACE)) {
+        beginScope();
+        block();
+        endScope();
     } else {
         expressionStatement();
     }
@@ -384,12 +432,55 @@ static uint8_t identifierConstant(Token* name) {
     return makeConstant(OBJ_VAL(copyString(name->start, name->length)));
 }
 
+static bool identifiersEqual(Token* a, Token* b) {
+    if (a->length != b->length) return false;
+    return memcmp(a->start, b->start, a->length) == 0;
+}
+
+/*  
+    To see if two identifiers are the same, we use this function.
+*/
+static void addLocal(Token name) {
+    if (current->localCount == UINT8_COUNT) {
+        error("Too many local variables in function.");
+        return;
+    }
+
+    Local* local = &current->locals[current->localCount++];
+    local->name = name;
+    local->depth = current->scopeDepth;
+}
+
+/*
+    This initializes the next available Local in the compiler’s array of variables. It stores the variable’s name and the depth of the scope that owns the variable.
+*/
+static void declareVariable() {
+    if (current->scopeDepth == 0) return;
+
+    Token* name = &parser.previous;
+    for (int i = current->localCount - 1; i >= 0; --i) {
+        Local* local = &current->locals[i];
+        if (local->depth != -1 && local->depth < current->scopeDepth)
+            break;
+        if (identifiersEqual(name, &local->name))
+            error("Redecleration of the variable at the same scope.");
+    }
+    addLocal(*name);
+}
+
 static uint8_t parseVariable(const char* errorMessage) {
     consume(TOKEN_IDENTIFIER, errorMessage);
+    
+    declareVariable(); /* Declare the variable */
+    if (current->scopeDepth > 0) return 0; /* we exit the function if we’re in a local scope and return a dummy index */ 
+
     return identifierConstant(&parser.previous);
 }
 
 static void defineVariable(uint8_t global) {
+    if (current->scopeDepth > 0) {
+        return;
+    }
     emitBytes(OP_DEFINE_GLOBAL, global);
 }
 
@@ -403,6 +494,8 @@ static ParseRule* getRule(TokenType type) {
 */
 bool compile(const char* source, Chunk* chunk) {
     initScanner(source);
+    Compiler compiler;
+    initCompiler(&compiler);
     compilingChunk = chunk;
 
     parser.hadError = false;
