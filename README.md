@@ -56,5 +56,5 @@ After working on the hash table implementation for the language, I utilized it t
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/14083a3f-cb7d-4eb3-a4e3-2e6b1d16be71)
 
-
 ### Local Variables & Lexical Scoping
+So far, all variables supported by the language have been global. Recently, I focused on extending the language to incorporate blocks, block scopes, and local variables. Additionally, I introduced a completely new runtime representation for variables using the new struct `Compiler` that keeps track of the scope depth, and the number of the local variables in that scope.
