@@ -52,3 +52,6 @@ Additionally, I've introduced several new operators to handle operations associa
 ![image](https://github.com/OmarAzizi/clox/assets/110500643/c0b671e9-17da-4b5e-9ee4-3c1c6b8137b2)
 
 ### Global Variables
+After working on the hash table implementation for the language, I utilized it to implement and support global variables. This allows us to define variables using the keyword var, assign them values, and subsequently modify their values. The retrieval of variables is entirely facilitated through the hash table mechanism.
+
+## Local Variables & Block Scopes
