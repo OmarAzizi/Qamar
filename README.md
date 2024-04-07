@@ -54,4 +54,7 @@ Additionally, I've introduced several new operators to handle operations associa
 ### Global Variables
 After working on the hash table implementation for the language, I utilized it to implement and support global variables. This allows us to define variables using the keyword `var`, assign them values, and subsequently modify their values. The retrieval of variables is entirely facilitated through the hash table mechanism.
 
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/14083a3f-cb7d-4eb3-a4e3-2e6b1d16be71)
+
+
 ### Local Variables & Lexical Scoping
