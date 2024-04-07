@@ -47,7 +47,7 @@ typedef struct {
 
 typedef struct {
     Token name;
-    int depth;  /* records the scope depth of the block where the local variable was declared */
+    int  depth;  /* records the scope depth of the block where the local variable was declared */
 } Local;
 
 typedef struct {
@@ -457,7 +457,12 @@ static bool identifiersEqual(Token* a, Token* b) {
 static int resolveLocal(Compiler* compiler, Token* name) {
     for (int i = compiler->localCount - 1; i >= 0; --i) {
         Local* local = &compiler->locals[i];
-        if (identifiersEqual(name, &local->name)) return i;
+        if (identifiersEqual(name, &local->name)) {
+            /* When we resolve a reference to a local variable, we check the scope depth to see if it’s fully defined. */
+            if (local->depth == -1) 
+                error("Can't read local variable in its own initializer.");
+           return i; 
+        }
     }
     return -1;
 }
@@ -473,7 +478,7 @@ static void addLocal(Token name) {
 
     Local* local = &current->locals[current->localCount++];
     local->name = name;
-    local->depth = current->scopeDepth;
+    local->depth = -1; /* -1 indicates uninitialized state of the variable */
 }
 
 /*
@@ -502,8 +507,16 @@ static uint8_t parseVariable(const char* errorMessage) {
     return identifierConstant(&parser.previous);
 }
 
+/*
+    Once the variable’s initializer has been compiled, we mark it initialized by changing the depth from `-1` to the current scope depth.
+*/
+static void markInitialized() {
+    current->locals[current->localCount - 1].depth = current->scopeDepth;
+}
+
 static void defineVariable(uint8_t global) {
     if (current->scopeDepth > 0) {
+        markInitialized();
         return;
     }
     emitBytes(OP_DEFINE_GLOBAL, global);
