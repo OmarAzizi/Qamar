@@ -127,6 +127,17 @@ static void emitBytes(uint8_t byte1, uint8_t byte2) {
     emitByte(byte2);
 }
 
+/*
+    The `emitJump` function reserves space for the jump offset and returns 
+    the index of the first byte of the emitted jump instruction.
+*/
+static int emitJump(uint8_t instruction) {
+    emitByte(instruction);
+    emitByte(0xFF);
+    emitByte(0xFF);
+    return currentChunk()->count - 2; /* Subracting 2 to give us the index of the first byte of the jump instruction */
+}
+
 static void emitReturn() { 
     emitByte(OP_RETURN); 
 }
@@ -142,6 +153,15 @@ static uint8_t makeConstant(Value value) {
 
 static void emitConstant(Value value) {
     emitBytes(OP_CONSTANT, makeConstant(value));
+}
+
+static void patchJump(int offset) {
+    int jump = currentChunk()->count - offset - 2;
+    if (jump > UINT16_MAX) {
+        error("Too much code to jump over.");
+    }
+    currentChunk()->code[offset] = (jump >> 8) & 0xFF;
+    currentChunk()->code[offset + 1] = jump & 0xFF;
 }
 
 static void initCompiler(Compiler* compiler) {
@@ -254,6 +274,17 @@ static void expressionStatement() {
     emitByte(OP_POP); /* Discarding the results */
 }
 
+static void ifStatement() {
+    consume(TOKEN_LEFT_PAREN, "Expect '(' after 'if'.");
+    expression();
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
+
+    int thenJump = emitJump(OP_JUMP_IF_FALSE);
+    statement();
+
+    patchJump(thenJump);
+}
+
 /*
     if we did match the `print` token, then we compile the rest of the statement here.
 */
@@ -307,6 +338,8 @@ static void decleration() {
 static void statement() {
     if (match(TOKEN_PRINT)) {
         printStatement();
+    } else if (match(TOKEN_IF)) {
+        ifStatement();
     } else if (match(TOKEN_LEFT_BRACE)) {
         beginScope();
         block();
