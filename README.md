@@ -71,5 +71,11 @@ If we run the code it will produce the following output as expected
 Our programming language is finally starting to look like a legitimate programming language.
 ```
 
-### `if else` Statments
-I don't really feel like typing alot now, but I basically implemented `if` statements and `if else`, so given this program in [if_statement.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/if_statement.ox):
+### `if` & `if else` Statements
+I don't feel like typing a lot now, but I implemented `if` statements and `if else`, so given this program in [if_statement.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/if_statement.ox):
+
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/d4d2f9eb-d225-485f-ae6d-291b7270b591)
+
+It produces the following output:
+
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/696928bc-436b-47db-a24e-0dbb8d8ad910)
