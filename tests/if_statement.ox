@@ -1,6 +1,6 @@
 var condition = false;
 
-if (false) {
+if (condition) {
     print "Condition is truthy.";
 }
 else {
