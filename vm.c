@@ -77,6 +77,8 @@ static InterpretResult run() {
 #define READ_BYTE() (*vm.ip++) // This macro reads the byte currently pointed at by the instruction pointer and then it increments it
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 #define READ_STRING() AS_STRING(READ_CONSTANT())
+#define READ_SHORT() \
+    (vm.ip += 2, (uint16_t)((vm.ip[-2] << 8) | vm.ip[-1]))
 #define BINARY_OP(valueType, op) \
     do { \
         if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
@@ -189,6 +191,12 @@ static InterpretResult run() {
                 printf("\n");
                 break;
             }
+            case OP_JUMP_IF_FALSE: {
+                /* It reads the 16-bit operand from the chunk */
+                uint16_t offset = READ_SHORT();
+                if (isFalsey(peek(0))) vm.ip += offset;
+                break;
+            }
             case OP_RETURN: {
                 /* Exit interpreter */
                 return INTERPRET_OK;
@@ -197,6 +205,7 @@ static InterpretResult run() {
     }
 
 #undef READ_BYTE
+#undef READ_CONSTANT
 #undef READ_CONSTANT
 #undef READ_CONSTANT
 #undef BINARY_OP
