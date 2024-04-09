@@ -72,3 +72,4 @@ Our programming language is finally starting to look like a legitimate programmi
 ```
 
 ### `if else` Statments
+I don't really feel like typing alot now, but I basically implemented `if` statements and `if else`, so given this program in [if_statement.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/if_statement.ox):
