@@ -1,5 +1,11 @@
 var condition = false;
 
-if (condition) print "Condition is truthy";
-if (!condition) print "Codition is falsey";
+if (false) {
+    print "Condition is truthy.";
+}
+else {
+    print "Condition is falsey.";
+}
+
+print "`if else` statement is done";
 
