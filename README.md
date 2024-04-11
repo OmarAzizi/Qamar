@@ -79,3 +79,6 @@ I don't feel like typing a lot now, but I implemented `if` statements and `if el
 It produces the following output:
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/696928bc-436b-47db-a24e-0dbb8d8ad910)
+
+### `while` Loops
+There's not much to explain here except for the fact that we've added a new feature: looping, specifically while loops, along with a new test file that contains a code snippit to verify its functionality [while_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/while_loop.ox) that counts down from 10 to 1
