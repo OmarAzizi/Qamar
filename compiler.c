@@ -128,6 +128,19 @@ static void emitBytes(uint8_t byte1, uint8_t byte2) {
 }
 
 /*
+    It’s a bit like `emitJump` and `patchJump` combined. It emits a new loop instruction, which unconditionally jumps backwards by a given offset.
+*/
+static void emitLoop(int loopStart) {
+    emitByte(OP_LOOP);
+
+    int offset = currentChunk()->count - loopStart + 2;
+    if (offset > UINT16_MAX) error("Loop body too large.");
+    
+    emitByte((offset >> 8) & 0xFF);
+    emitByte(offset & 0xFF);
+}
+
+/*
     The `emitJump` function reserves space for the jump offset and returns 
     the index of the first byte of the emitted jump instruction.
 */
@@ -302,6 +315,25 @@ static void printStatement() {
     emitByte(OP_PRINT); 
 }
 
+static void whileStatement() {
+    int loopStart = currentChunk()->count;
+
+    /* Compile the condition expression with the paranthses */
+    consume(TOKEN_LEFT_PAREN, "Expect '(' after 'while'.");
+    expression();
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after condition.");
+
+    int exitJump = emitJump(OP_JUMP_IF_FALSE); /* Exiting the loop if the condition was false */
+    emitByte(OP_POP);
+    statement(); /* compiling the body of the `while` */
+
+    /* After the body, we call this function to emit a “loop” instruction. That instruction needs to know how far back to jump. */
+    emitLoop(loopStart);
+
+    patchJump(exitJump);
+    emitByte(OP_POP);
+}
+
 /*
     If we hit a compile error while parsing the previous statement, we enter panic mode. 
     When that happens, after the statement we start synchronizing
@@ -348,6 +380,8 @@ static void statement() {
         printStatement();
     } else if (match(TOKEN_IF)) {
         ifStatement();
+    } else if (match(TOKEN_WHILE)) {
+        whileStatement();
     } else if (match(TOKEN_LEFT_BRACE)) {
         beginScope();
         block();
