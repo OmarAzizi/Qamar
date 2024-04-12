@@ -97,3 +97,5 @@ This is an example of a `for` loop that prints even numbers from **1** through *
 It produces the following output:
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/fbf18df7-16c0-4f64-9cf7-2785201f99d6)
+
+With all of these control structures in place, Onyx is finally considered to be a Turing-complete programming language.
