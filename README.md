@@ -90,4 +90,10 @@ It produces the following output:
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/00b742c6-f508-4005-a3d0-e81c3880912c)
 
 ### `for` loops
+This is an example of a `for` loop that prints even numbers from **1** through **10** provided in [for_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/for_loop.ox):
 
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/4a124fab-4566-47b6-983b-8de32bbb4e1c)
+
+It produces the following output:
+
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/fbf18df7-16c0-4f64-9cf7-2785201f99d6)
