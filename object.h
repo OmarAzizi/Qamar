@@ -8,35 +8,49 @@
 
 #include "common.h"
 #include "value.h"
+#include "chunk.h"
 
 /* This macro that extracts the object type tag from a given Value. */
-#define OBJ_TYPE(value)  (AS_OBJ(value)->type)
+#define OBJ_TYPE(value)     (AS_OBJ(value)->type)
+
+#define IS_FUNCTION(value)  isObjType(value, OBJ_FUNCION)
+#define AS_FUNCTION(value)  ((ObjFunction*)AS_OBJ(value))
 
 /* When we cast an `Obj*` to `ObjString*` we need to make sure it points to an `obj` field of an actial `ObjString` */
-#define IS_STRING(value)  isObjType(value, OBJ_STRING)
+#define IS_STRING(value)    isObjType(value, OBJ_STRING)
 
 /*
     These two macros take a Value that is expected to contain a pointer to a valid ObjString on the heap. 
     The first one returns the ObjString* pointer. The second one steps through that to return the character array itself.
 */
-#define AS_STRING(value)  ((ObjString*)AS_OBJ(value))
-#define AS_CSTRING(value) (((ObjString*)AS_OBJ(value))->chars)
+#define AS_STRING(value)    ((ObjString*)AS_OBJ(value))
+#define AS_CSTRING(value)   (((ObjString*)AS_OBJ(value))->chars)
 
 typedef enum {
+    OBJ_FUNCTION,
     OBJ_STRING,
 } ObjType;
 
 struct Obj {
     ObjType type;
-    struct Obj* next; /* The Obj iself will be a linked-list (it helps with garbage collection) */
+    struct Obj* next;   /* The Obj iself will be a linked-list (it helps with garbage collection) */
 };
+
+typedef struct {
+    Obj obj;            
+    int arity;          /* Number of parameters the function expects */
+    Chunk chunk;        /* Each function will have it's own chunk of Bytecode */
+    ObjString* name;
+} ObjFunction;
 
 struct ObjString {
     Obj obj;
     int length;
     char* chars;
-    uint32_t hash; /* Each ObjString will store a hash, this will help in the implementation of hash tables*/
+    uint32_t hash;      /* Each ObjString will store a hash, this will help in the implementation of hash tables*/
 };
+
+ObjFunction* newFunction();
 
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
