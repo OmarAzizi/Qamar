@@ -50,7 +50,16 @@ typedef struct {
     int  depth;  /* records the scope depth of the block where the local variable was declared */
 } Local;
 
+/* This lets the compiler tell when it’s compiling top-level code versus the body of a function */
+typedef enum {
+    TYPE_FUNCTION,
+    TYPE_SCRIPT
+} FunctionType;
+
 typedef struct {
+    ObjFunction* function;
+    FunctionType type;
+
     Local locals[UINT8_COUNT];  /* Simple array of all locals that are in scope during each point in the compilation */
     int localCount;             /* Tracks how many locals are in scope*/
     int scopeDepth;             /* The number of bits surrounding the current but we are compiling */
@@ -61,7 +70,11 @@ Compiler* current = NULL;
 Chunk* compilingChunk;
 
 static Chunk* currentChunk() { 
-    return compilingChunk; 
+/* 
+    Every place in the compiler that was writing to the Chunk now needs to go through that function pointer 
+    The current chunk is always the chunk owned by the function we're in the middle of compiling
+*/
+    return &current->function->chunk;
 }
 
 static void errorAt(Token* token, const char* message) {
