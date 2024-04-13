@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "memory.h"
-#include "value.h"
 #include "vm.h"
 
 /*
@@ -28,6 +27,16 @@ void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
 
 static void freeObject(Obj* object) {
     switch (object->type) {
+        case OBJ_FUNCTION: {
+        /*
+            This switch case is responsible for freeing the ObjFunction itself as well as any other memory it owns. 
+            Functions own their chunk, so we call Chunk’s destructor-like function.
+        */
+            ObjFunction* function = (ObjFunction*)object;
+            freeChunk(&function->chunk);
+            FREE(OBJ_FUNCTION, object);
+            break;
+        }
         case OBJ_STRING: {
             ObjString* string = (ObjString*)object;
             FREE_ARRAY(char, string->chars, string->length + 1);
