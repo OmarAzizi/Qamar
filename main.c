@@ -5,23 +5,14 @@
 #include "vm.h"
 #include "common.h"
 
-#ifdef _WIN32
-#include <Windows.h>
-#include <conio.h>
-#else
 #include <editline/readline.h>
 #include <editline/history.h>
-#endif
 
 static void repl() {
     puts("ONYX Version 9.0.1");
     puts("Press Ctrl+c to Exit\n");
+
     while (1) {
-#ifdef _WIN32
-        char buffer[2048];
-        fgets(buffer, 2048, stdin);
-        interpret(buffer);
-#else
         char* input = readline(">> ");
         add_history(input);
         
@@ -43,7 +34,6 @@ static void repl() {
 
         interpret(input);
         free(input);
-#endif
     }
 }
 
