@@ -24,6 +24,23 @@ static void repl() {
 #else
         char* input = readline(">> ");
         add_history(input);
+        
+        int scopeCount = 0;
+
+        if (input[strlen(input) - 1] == '{') {
+            ++scopeCount;
+            while (1) {
+                strcat(input, readline(".. "));
+                if (input[strlen(input) - 1] == '{')
+                    ++scopeCount;
+                if (input[strlen(input) - 1] == '}')
+                    --scopeCount;
+                if (scopeCount == 0)
+                    break;
+            }
+
+        }
+
         interpret(input);
         free(input);
 #endif
