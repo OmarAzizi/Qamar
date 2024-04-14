@@ -5,16 +5,34 @@
 #include "value.h"
 #include "table.h"
 
-#define STACK_MAX 256
+#define FRAMES_MAX 64
+#define STACK_MAX (FRAMES_MAX * UINT8_COUNT)
+
+/*
+    So for each function call that hasn’t returned yet we need to track where on the stack that function’s locals begin, 
+    and where the caller should resume. We’ll put this, along with some other stuff, in a new struct.
+
+    This struct represent a single ongoing function    
+*/
+typedef struct {
+    ObjFunction* function;
+    uint8_t* ip;
+    Value* slots;   /* This will point the the VM's value stack at the first slot the function can use */
+} CallFrame;
 
 typedef struct {
-    Chunk* chunk; /* storing the chunk of bytecode */
-    uint8_t* ip;  /* this pointer will keep track of where we are in the bytecode array (instruction pointer OR program counter) */
+/*
+    This array replaces the `chunk` and `ip` fields we used to have directly in the VM. Now each CallFrame has its own `ip` 
+    and its own pointer to the ObjFunction that it’s executing. From there, we can get to the function’s chunk.
+*/
+    CallFrame frames[FRAMES_MAX];
+    int frameCount; /* Stores the current height of the `CallFrame` stak */
+
     Value stack[STACK_MAX];
     Value* stackTop;
     Table globals;
     Table strings;
-    Obj* objects; /* The VM stors a pointer to the head of the Obj's list */
+    Obj* objects;   /* The VM stors a pointer to the head of the Obj's list */
 } VM;
 
 /*

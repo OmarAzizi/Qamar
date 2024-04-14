@@ -50,7 +50,16 @@ typedef struct {
     int  depth;  /* records the scope depth of the block where the local variable was declared */
 } Local;
 
+/* This lets the compiler tell when it’s compiling top-level code versus the body of a function */
+typedef enum {
+    TYPE_FUNCTION,
+    TYPE_SCRIPT
+} FunctionType;
+
 typedef struct {
+    ObjFunction* function;
+    FunctionType type;
+
     Local locals[UINT8_COUNT];  /* Simple array of all locals that are in scope during each point in the compilation */
     int localCount;             /* Tracks how many locals are in scope*/
     int scopeDepth;             /* The number of bits surrounding the current but we are compiling */
@@ -61,7 +70,11 @@ Compiler* current = NULL;
 Chunk* compilingChunk;
 
 static Chunk* currentChunk() { 
-    return compilingChunk; 
+/* 
+    Every place in the compiler that was writing to the Chunk now needs to go through that function pointer 
+    The current chunk is always the chunk owned by the function we're in the middle of compiling
+*/
+    return &current->function->chunk;
 }
 
 static void errorAt(Token* token, const char* message) {
@@ -177,17 +190,45 @@ static void patchJump(int offset) {
     currentChunk()->code[offset + 1] = jump & 0xFF;
 }
 
-static void initCompiler(Compiler* compiler) {
+static void initCompiler(Compiler* compiler, FunctionType type) {
+    /* Initialize the new Compiler fields */
+    compiler->function = NULL;
+    compiler->type = type;
+
     compiler->localCount = 0;
     compiler->scopeDepth = 0;
+    
+    compiler->function = newFunction(); /* Then we allocate a new function object to compile into */
+
     current = compiler;
+
+/*
+     compiler’s locals array keeps track of which stack slots are associated with which local variables or temporaries. 
+     From now on, the compiler implicitly claims stack slot zero for the VM’s own internal use. We give it an empty name so 
+     that the user can’t write an identifier that refers to it.
+*/
+    Local* local = &current->locals[current->localCount++];
+    local->depth = 0;
+    local->name.start = "";
+    local->name.length = 0;
 }
 
-static void endCompiler() { 
-    emitReturn(); 
+static ObjFunction* endCompiler() { 
+    emitReturn();
+
+/*
+    Previously, when `interpret()` called into the compiler, it passed in a Chunk to be written to. 
+    Now that the compiler creates the function object itself, we return that function.
+*/
+    ObjFunction* function = current->function;
+
 #ifdef DEBUG_PRINT_CODE
-    if(!parser.hadError) disassembleChunk(currentChunk(), "code");
+    if(!parser.hadError) {
+        disassembleChunk(currentChunk(), function->name != NULL ? function->name->chars : "<script>");
+    }
 #endif
+
+    return function;
 }
 
 static void beginScope() {
@@ -686,15 +727,10 @@ static ParseRule* getRule(TokenType type) {
     return &rules[type];
 }
 
-/*
-    We pass the function the chunk of code where it will write 
-    the code and then returns whether or not compilation succeeded
-*/
-bool compile(const char* source, Chunk* chunk) {
+ObjFunction* compile(const char* source) {
     initScanner(source);
     Compiler compiler;
-    initCompiler(&compiler);
-    compilingChunk = chunk;
+    initCompiler(&compiler, TYPE_SCRIPT);
 
     parser.hadError = false;
     parser.panicMode = false;
@@ -706,6 +742,6 @@ bool compile(const char* source, Chunk* chunk) {
         decleration();
     }
 
-    endCompiler();
-    return !parser.hadError;
+    ObjFunction* function = endCompiler();
+    return parser.hadError ? NULL : function;
 }
