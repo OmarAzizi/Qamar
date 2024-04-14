@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "vm.h"
 #include "common.h"
@@ -8,30 +9,64 @@
 #include <editline/readline.h>
 #include <editline/history.h>
 
+static bool checkOpenBraceAtEnd(char* input) {
+    int len = strlen(input) - 1;
+    if (len + 1 == 0) 
+        return false;
+
+    while ((input[len] == ' ' || input[len] == '\n') && len > -1) {
+        --len;
+    }
+    return input[len] == '{' ? true : false;
+}
+
+static bool checkCloseBraceAtStart(char* input, int offset) {
+    int len = strlen(input);
+    if (len == 0) 
+        return false;
+
+    while (input[offset] == ' ' && offset < len) {
+        ++offset;
+    }
+
+    return input[offset] == '}' ? true : false;
+}
+
+
 static void repl() {
     puts("ONYX Version 9.0.1");
     puts("Press Ctrl+c to Exit\n");
-
+    
     while (1) {
         char* input = readline(">> ");
         add_history(input);
         
         int scopeCount = 0;
 
-        if (input[strlen(input) - 1] == '{') {
+        if (checkOpenBraceAtEnd(input)) {
             ++scopeCount;
             while (1) {
-                strcat(input, readline(".. "));
-                if (input[strlen(input) - 1] == '{')
+                int offset = strlen(input);
+                
+                char* newInput = readline(".. ");
+                input = realloc(input, strlen(input) + strlen(newInput) + 1); // Resize input buffer
+                strcat(input, newInput);
+                free(newInput);
+                
+                if (checkOpenBraceAtEnd(input) && checkCloseBraceAtStart(input, offset)) {
+                    continue; 
+                } else if (checkOpenBraceAtEnd(input)) {
                     ++scopeCount;
-                if (input[strlen(input) - 1] == '}')
+                } else if (checkCloseBraceAtStart(input, offset)) {
                     --scopeCount;
+                }
+
                 if (scopeCount == 0)
                     break;
             }
 
         }
-
+        
         interpret(input);
         free(input);
     }
