@@ -236,7 +236,7 @@ InterpretResult interpret(const char* source) {
     if (function == NULL) return INTERPRET_COMPILE_ERROR;
 
     push(OBJ_VAL(function));
-    CallFrame* frame = &vm.frames[vm.frameCount];
+    CallFrame* frame = &vm.frames[vm.frameCount++];
     frame->function = function;
     frame->ip = function->chunk.code;
     frame->slots = vm.stack;
