@@ -4,6 +4,7 @@
 
 #include "compiler.h"
 #include "vm.h"
+#include "debug.h"
 
 VM vm;
 
@@ -242,6 +243,9 @@ InterpretResult interpret(const char* source) {
     frame->slots = vm.stack;
 
     /* Then we send the chunk to the VM to be executed */
-    return run();
+    InterpretResult result = run();
+    pop();
+
+    return result;
 }
 
