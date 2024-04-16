@@ -32,7 +32,6 @@ static bool checkCloseBraceAtStart(char* input, int offset) {
     return input[offset] == '}' ? true : false;
 }
 
-
 static void repl() {
     puts("ONYX Version 9.0.1");
     puts("Press Ctrl+c to Exit\n");
@@ -61,12 +60,9 @@ static void repl() {
                     --scopeCount;
                 }
 
-                if (scopeCount == 0)
-                    break;
+                if (scopeCount == 0) break;
             }
-
         }
-        
         interpret(input);
         free(input);
     }
