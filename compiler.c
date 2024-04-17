@@ -167,6 +167,7 @@ static int emitJump(uint8_t instruction) {
 }
 
 static void emitReturn() { 
+    emitByte(OP_NIL); /* In case we were returning a function that returns nothing */
     emitByte(OP_RETURN); 
 }
 
