@@ -50,7 +50,7 @@ typedef struct {
     int count;
     int capacity;
     uint8_t* code;
-    int* lines; // This array will keep track of line information
+    int* lines;         /* This array will keep track of line information */
     ValueArray constants;
 } Chunk;
 
