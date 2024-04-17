@@ -33,7 +33,7 @@ static bool checkCloseBraceAtStart(char* input, int offset) {
 }
 
 static void repl() {
-    puts("ONYX Version 9.0.1");
+    puts("ONYX Version 10.0.1");
     puts("Press Ctrl+c to Exit\n");
     
     while (1) {
