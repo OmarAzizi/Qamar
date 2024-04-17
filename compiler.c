@@ -56,7 +56,9 @@ typedef enum {
     TYPE_SCRIPT
 } FunctionType;
 
-typedef struct {
+typedef struct Compiler {
+    struct Compiler* enclosing; /* Each compiler points bacj to the compiler fo the function that encloses it all the way back to the root Compiler for top-level code */
+
     ObjFunction* function;
     FunctionType type;
 
@@ -192,6 +194,8 @@ static void patchJump(int offset) {
 
 static void initCompiler(Compiler* compiler, FunctionType type) {
     /* Initialize the new Compiler fields */
+
+    compiler->enclosing = current; /* When initializing a new Compiler, we capture the about-to-no-longer-be-current one in that pointer. */
     compiler->function = NULL;
     compiler->type = type;
 
@@ -201,6 +205,10 @@ static void initCompiler(Compiler* compiler, FunctionType type) {
     compiler->function = newFunction(); /* Then we allocate a new function object to compile into */
 
     current = compiler;
+
+    if (type != TYPE_SCRIPT) {
+        current->function->name = copyString(parser.previous.start, parser.previous.length);
+    }
 
 /*
      compiler’s locals array keeps track of which stack slots are associated with which local variables or temporaries. 
@@ -227,7 +235,8 @@ static ObjFunction* endCompiler() {
         disassembleChunk(currentChunk(), function->name != NULL ? function->name->chars : "<script>");
     }
 #endif
-
+    
+    current = current->enclosing; /* When a Compiler finishes, it pops itself off the stack */
     return function;
 }
 
@@ -248,7 +257,7 @@ static void endScope() {
 
 static void expression();
 static void statement();
-static void decleration();
+static void declaration();
 static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 static uint8_t identifierConstant(Token* name);
@@ -256,6 +265,7 @@ static uint8_t parseVariable(const char* errorMessage);
 static void defineVariable(uint8_t global);
 static int resolveLocal(Compiler* compiler, Token* name);
 static void and_(bool canAssign);
+static void markInitialized();
 
 static void binary(bool canAssign) {
     TokenType operatorType = parser.previous.type;
@@ -294,11 +304,52 @@ static void expression() {
 }
 
 static void block() {
-    /* This keeps parsing declerations and statements untill it his a closing brace or enf of file token */
+    /* This keeps parsing declarations and statements untill it his a closing brace or enf of file token */
     while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
-        decleration();
+        declaration();
     }
     consume(TOKEN_RIGHT_BRACE, "Expect '}' after block.");
+}
+
+static void function(FunctionType type) {
+    Compiler compiler;
+    initCompiler(&compiler, type);
+    beginScope();
+
+    consume(TOKEN_LEFT_PAREN, "Expect '(' after function name.");
+    
+    /* Compiling the function parameters */
+    if (!check(TOKEN_RIGHT_PAREN)) {
+        do {
+            current->function->arity++;
+            if (current->function->arity > 255) {
+                errorAtCurrent("Can't have more than 255 parameters.");
+            }
+            uint8_t constant = parseVariable("Expect parameter name.");
+            defineVariable(constant);
+        } while (match(TOKEN_COMMA));
+    }
+
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after parameters.");
+    consume(TOKEN_LEFT_BRACE, "Expect '{' before function body.");
+    block();
+
+    ObjFunction* function = endCompiler();
+    emitBytes(OP_CONSTANT, makeConstant(OBJ_VAL(function)));
+}
+
+static void funDeclaration() {
+/*
+    Functions are first-class values, and a function declaration simply creates and stores one in a newly declared variable. 
+    So we parse the name just like any other variable declaration.
+
+    A function declaration at the top level will bind the function to a global variable. Inside a block or other function, 
+    a function declaration creates a local variable.
+*/
+    uint8_t global = parseVariable("Expect function name.");
+    markInitialized(); /* Marking function as initialized before we compile the body. That way the name can be referenced inside the body without generating errors */
+    function(TYPE_FUNCTION);
+    defineVariable(global);
 }
 
 static void varDecleration() {
@@ -315,7 +366,7 @@ static void varDecleration() {
         emitByte(OP_NIL);
     }
 
-    consume(TOKEN_SEMICOLON, "Expect ';' after variable decleration."); /* statement should be terminated using a semicolon */
+    consume(TOKEN_SEMICOLON, "Expect ';' after variable declaration."); /* statement should be terminated using a semicolon */
     defineVariable(global);
 }
 
@@ -456,8 +507,10 @@ static void synchronize() {
     }
 }
 
-static void decleration() {
-    if (match(TOKEN_VAR)) {
+static void declaration() {
+    if (match(TOKEN_FUN)) {
+        funDeclaration();
+    } else if (match(TOKEN_VAR)) {
         varDecleration(); 
     } else {
         statement();
@@ -678,7 +731,7 @@ static void declareVariable() {
         if (local->depth != -1 && local->depth < current->scopeDepth)
             break;
         if (identifiersEqual(name, &local->name))
-            error("Redecleration of the variable at the same scope.");
+            error("Redeclaration of the variable at the same scope.");
     }
     addLocal(*name);
 }
@@ -696,6 +749,7 @@ static uint8_t parseVariable(const char* errorMessage) {
     Once the variable’s initializer has been compiled, we mark it initialized by changing the depth from `-1` to the current scope depth.
 */
 static void markInitialized() {
+    if (current->scopeDepth == 0) return;
     current->locals[current->localCount - 1].depth = current->scopeDepth;
 }
 
@@ -739,7 +793,7 @@ ObjFunction* compile(const char* source) {
    
     /* We keep compiling declerations until we hit the end of a source file */
     while (!match(TOKEN_EOF)) {
-        decleration();
+        declaration();
     }
 
     ObjFunction* function = endCompiler();
