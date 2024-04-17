@@ -54,6 +54,33 @@ static Value peek(int distance) {
     return vm.stackTop[-1 - distance];
 }
 
+static bool call(ObjFunction* function, int argCount) {
+/*
+    This simply initializes the next CallFrame on the stack. It stores a pointer to the function being called 
+    and points the frame’s ip to the beginning of the function’s bytecode.
+
+    Finally, it sets up the slots pointer to give the frame its window into the stack
+*/
+    CallFrame* frame = &vm.frames[vm.frameCount++];
+    frame->function = function;
+    frame->ip = function->chunk.code;
+    frame->slots = vm.stackTop - argCount - 1; /* The `-1` is to account for stack slot zero which the compiler set aside for when we add methods later. */
+    return true;
+}
+
+static bool callValue(Value callee, int argCount) {
+    if (IS_OBJ(callee)) {
+        switch (OBJ_TYPE(callee)) {
+            case OBJ_FUNCTION:
+                return call(AS_FUNCTION(callee), argCount);
+            default:
+                break; /* Non-callable object type. */
+        }
+    }
+    runtimeError("Can only call functions and classes.");
+    return false;
+}
+
 /*
     Here i'm following the rule in Ruby that `nil` and `false` are falsey and every other value behaves like `true`
 */
@@ -216,6 +243,14 @@ static InterpretResult run() {
             case OP_LOOP: {
                 uint16_t offset = READ_SHORT();
                 frame->ip -= offset;
+                break;
+            }
+            case OP_CALL: {
+                int argCount = READ_BYTE();
+                if (!callValue(peek(argCount), argCount)) {
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                frame = &vm.frames[vm.frameCount - 1];
                 break;
             }
             case OP_RETURN: {
