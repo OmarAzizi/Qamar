@@ -61,6 +61,19 @@ static bool call(ObjFunction* function, int argCount) {
 
     Finally, it sets up the slots pointer to give the frame its window into the stack
 */
+
+    /* Handling error of passing too many or too less arguments */
+    if (argCount != function->arity) {
+        runtimeError("Expected %d arguments but got %d.", function->arity, argCount);
+        return false;
+    }
+    
+    /* There’s another error we need to report.  Because the CallFrame array has a fixed size, we need to ensure a deep call chain doesn’t overflow */
+    if (vm.frameCount == FRAMES_MAX) {
+        runtimeError("Stack overflow.");
+        return false;
+    }
+
     CallFrame* frame = &vm.frames[vm.frameCount++];
     frame->function = function;
     frame->ip = function->chunk.code;
