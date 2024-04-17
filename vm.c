@@ -280,8 +280,24 @@ static InterpretResult run() {
                 break;
             }
             case OP_RETURN: {
-                /* Exit interpreter */
-                return INTERPRET_OK;
+                /* We are about to discard the function's stack window so we pop the return value and hang it */
+                Value result = pop(); 
+                
+                /* Discarding the function's CallFrame */
+                vm.frameCount--;
+
+                if (vm.frameCount == 0) {
+                /* 
+                    If it was the ver last CallFrame, this means we finished executing top-level code/script 
+                */
+                    pop();
+                    return INTERPRET_OK;
+                }
+
+                vm.stackTop = frame->slots;
+                push(result); /* pushing the return value onto the stack window of the caller */
+                frame = &vm.frames[vm.frameCount - 1]; /* Update the `run` function's  cached pointer */
+                break;
             }
         }
     }
@@ -300,10 +316,6 @@ InterpretResult interpret(const char* source) {
     push(OBJ_VAL(function));
     call(function, 0);
 
-    /* Then we send the chunk to the VM to be executed */
-    InterpretResult result = run();
-    pop();
-
-    return result;
+    return run();
 }
 
