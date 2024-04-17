@@ -266,6 +266,7 @@ static void defineVariable(uint8_t global);
 static int resolveLocal(Compiler* compiler, Token* name);
 static void and_(bool canAssign);
 static void markInitialized();
+static uint8_t argumentList();
 
 static void binary(bool canAssign) {
     TokenType operatorType = parser.previous.type;
@@ -285,6 +286,12 @@ static void binary(bool canAssign) {
         case TOKEN_SLASH:           emitByte(OP_DIVIDE); break;
         default:                    return; // Unreachable
     }
+}
+
+static void call(bool canAssign) {
+    /* We’ve already consumed the ( token, so next we compile the arguments using a separate `argumentList()` helper. */
+    uint8_t argCount = argumentList();
+    emitBytes(OP_CALL, argCount);
 }
 
 /*
@@ -611,7 +618,7 @@ static void unary(bool canAssign) {
 
 /* The table that drives our whole parser is an array of ParseRules */
 ParseRule rules[] = {
-    [TOKEN_LEFT_PAREN]    = {grouping,  NULL,         PREC_NONE},
+    [TOKEN_LEFT_PAREN]    = {grouping,  call,         PREC_CALL},
     [TOKEN_RIGHT_PAREN]   = {NULL,      NULL,         PREC_NONE},
     [TOKEN_LEFT_BRACE]    = {NULL,      NULL,         PREC_NONE}, 
     [TOKEN_RIGHT_BRACE]   = {NULL,      NULL,         PREC_NONE},
@@ -759,6 +766,24 @@ static void defineVariable(uint8_t global) {
         return;
     }
     emitBytes(OP_DEFINE_GLOBAL, global);
+}
+
+static uint8_t argumentList() {
+    uint8_t argCount = 0;
+    if (!check(TOKEN_RIGHT_PAREN)) {
+        do {
+        /* 
+            Each argument expression generates code that leaves its value on the stack in preparation for the call 
+        */
+            expression(); 
+            if (argCount == 255) {
+                error("Can't have more than 255 arguments.");
+            }
+            argCount++;
+        } while (match(TOKEN_COMMA));
+    }
+    consume(TOKEN_RIGHT_PAREN, "Expect ')' after arguments.");
+    return argCount;
 }
 
 static void and_(bool canAssign) {
