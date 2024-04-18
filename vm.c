@@ -1,12 +1,20 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <time.h>
 
 #include "compiler.h"
 #include "vm.h"
 #include "debug.h"
 
 VM vm;
+
+/*
+    This native function returns the elapsed time since the program started running, in seconds.
+*/
+static Value clockNative(int argCount, Value* args) {
+    return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
+}
 
 static void resetStack() { 
     vm.stackTop = vm.stack;
@@ -57,6 +65,9 @@ void initVM() {
     vm.objects = NULL;
     initTable(&vm.globals);
     initTable(&vm.strings);
+
+    /* Using the `defineNative` helper interface to define a new native function */
+    defineNative("clock", clockNative); 
 }
 
 void freeVM() {
