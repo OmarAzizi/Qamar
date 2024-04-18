@@ -101,4 +101,12 @@ It produces the following output:
 With all of these control structures in place, Onyx is finally considered to be a Turing-complete programming language.
 
 ### Functions & Recursion
-I have implemented support for defining and calling functions. Additionally, I have incorporated Native Functions, which are functions defined in C that can be accessed by users (similar to a standard library functions). As an example, I have implemented a `clock` function that provides the elapsed time since the program started. The following example is provided in [fib.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/fib.ox):
+I have implemented support for defining and calling functions. Additionally, I have incorporated Native Functions, which are functions defined in C that can be accessed by users (similar to standard library functions). As an example, I have implemented a `clock` function that provides the elapsed time since the program started. The following example is provided in [fib.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/fib.ox):
+
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/cd57da57-f4ac-44ee-aed0-12b495d39b26)
+
+Running it produces the following:
+
+![image](https://github.com/OmarAzizi/Onyx/assets/110500643/48163984-47ff-4074-a0ab-bc6d70818595)
+
+
