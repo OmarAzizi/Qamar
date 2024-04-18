@@ -40,6 +40,18 @@ static void runtimeError(const char* format, ...) {
     resetStack();
 }
 
+/*
+    This is a helper to define a new native function exposed to the users of the language
+    It takes a pointer to a C function and a name it will be known as in the language.
+*/
+static void defineNative(const char* name, NativeFn function) {
+    push(OBJ_VAL(copyString(name, (int)strlen(name))));
+    push(OBJ_VAL(newNative(function)));
+    tableSet(&vm.globals, AS_STRING(vm.stack[0]), vm.stack[1]);
+    pop();
+    pop();
+}
+
 void initVM() {
     resetStack();
     vm.objects = NULL;
