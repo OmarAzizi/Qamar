@@ -16,6 +16,9 @@
 #define IS_FUNCTION(value)  isObjType(value, OBJ_FUNCION)
 #define AS_FUNCTION(value)  ((ObjFunction*)AS_OBJ(value))
 
+#define IS_NATIVE(value)    isObjType(value, OBJ_NATIVE)
+#define AS_NATIVE(value)    (((ObjNative*)AS_OBJ(value))->function)
+
 /* When we cast an `Obj*` to `ObjString*` we need to make sure it points to an `obj` field of an actial `ObjString` */
 #define IS_STRING(value)    isObjType(value, OBJ_STRING)
 
@@ -28,6 +31,7 @@
 
 typedef enum {
     OBJ_FUNCTION,
+    OBJ_NATIVE,
     OBJ_STRING,
 } ObjType;
 
@@ -43,6 +47,16 @@ typedef struct {
     ObjString* name;
 } ObjFunction;
 
+/*
+    The native function takes the argument count and a pointer to the first. It accesses the arguments through that pointer
+*/
+typedef Value (*NativeFn)(int argCount,  Value* args);
+
+typedef struct {
+    Obj obj;
+    NativeFn function;  /* A pointer to the C function that implements the native behaviour */
+} ObjNative;
+
 struct ObjString {
     Obj obj;
     int length;
@@ -51,6 +65,7 @@ struct ObjString {
 };
 
 ObjFunction* newFunction();
+ObjNative* newNative(NativeFn function);
 
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
