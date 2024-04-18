@@ -99,6 +99,17 @@ static bool callValue(Value callee, int argCount) {
         switch (OBJ_TYPE(callee)) {
             case OBJ_FUNCTION:
                 return call(AS_FUNCTION(callee), argCount);
+            case OBJ_NATIVE: {
+            /*
+                If the object being called is a native function, we invoke the C function right then and there. 
+                There’s no need to muck with CallFrames or anything. We just hand off to C, get the result, and stuff it back in the stack.
+            */
+                NativeFn native = AS_NATIVE(callee);
+                Value result = native(argCount, vm.stackTop - argCount);
+                vm.stackTop -= argCount + 1;
+                push(result);
+                return true;
+            }
             default:
                 break; /* Non-callable object type. */
         }
