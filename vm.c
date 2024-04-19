@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "compiler.h"
@@ -18,12 +19,18 @@ static Value clockNative(int argCount, Value* args) {
     return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
 }
 
-static Value input(int argCount, Value* args) {
+static Value inputNative(int argCount, Value* args) {
     char input[2048];
     printf("%s", AS_CSTRING(args[0]));
     fgets(input, sizeof(input), stdin);
-    ObjString* str = takeString(input, strlen(input));
+    ObjString* str = copyString(input, strlen(input));
     return OBJ_VAL(str);
+}
+
+static Value numNative(int argCount, Value* args) {
+    char* ptr;
+    double number = strtod(AS_CSTRING(args[0]), &ptr);
+    return NUMBER_VAL(number);
 }
 
 static void resetStack() { 
@@ -78,7 +85,8 @@ void initVM() {
 
     /* Using the `defineNative` helper interface to define a new native function */
     defineNative("clock", clockNative); 
-    defineNative("input", input);
+    defineNative("input", inputNative);
+    defineNative("num", numNative);
 }
 
 void freeVM() {
