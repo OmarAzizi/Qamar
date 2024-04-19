@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     else if (argc == 2) {
         char* extention = strchr(argv[1], '.');
         if (strcmp(extention + 1, "qmr") != 0) {
-            fprintf(stderr, "<%s> file format not recognized\nexpexted <.qmr>", extention);
+            fprintf(stderr, "Unexpected file format <%s>\nExpexted <.qmr>", extention);
             exit(64);
         }
         runFile(argv[1]); // Read source file
