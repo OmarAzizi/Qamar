@@ -9,11 +9,21 @@
 
 VM vm;
 
+static void runtimeError(const char* format, ...);
+
 /*
     This native function returns the elapsed time since the program started running, in seconds.
 */
 static Value clockNative(int argCount, Value* args) {
     return NUMBER_VAL((double)clock() / CLOCKS_PER_SEC);
+}
+
+static Value input(int argCount, Value* args) {
+    char input[2048];
+    printf("%s", AS_CSTRING(args[0]));
+    fgets(input, sizeof(input), stdin);
+    ObjString* str = takeString(input, strlen(input));
+    return OBJ_VAL(str);
 }
 
 static void resetStack() { 
@@ -68,6 +78,7 @@ void initVM() {
 
     /* Using the `defineNative` helper interface to define a new native function */
     defineNative("clock", clockNative); 
+    defineNative("input", input);
 }
 
 void freeVM() {
