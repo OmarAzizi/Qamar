@@ -110,9 +110,16 @@ int main(int argc, char** argv) {
     initVM();
     
     if (argc == 1) repl(); // Read, Evaluate, Print, Loop
-    else if (argc == 2) runFile(argv[1]); // Read source file
+    else if (argc == 2) {
+        char* extention = strchr(argv[1], '.');
+        if (strcmp(extention + 1, "qmr") != 0) {
+            fprintf(stderr, "<%s> file format not recognized\nexpexted <.qmr>", extention);
+            exit(64);
+        }
+        runFile(argv[1]); // Read source file
+    }
     else {
-        fprintf(stderr, "Usage: clox [path]\n");
+        fprintf(stderr, "Usage: ./qamar [path]\n");
         exit(64);
     }
 
