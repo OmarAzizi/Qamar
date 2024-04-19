@@ -1,0 +1,13 @@
+print "This program tells you if the number you inputted is even or not.";
+print "Press Ctrl+c to exit";
+
+while (true) {
+    var number = num(input("Enter a number: "));
+
+    if (number % 2 == 0) {
+        print "It is even!";
+    }
+    else {
+        print "It is odd!";
+    }
+}
