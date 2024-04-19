@@ -162,6 +162,30 @@ static void concatenate() {
     push(OBJ_VAL(result));
 }
 
+static InterpretResult modulus() {
+    if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { 
+        runtimeError("Operands must be numbers."); 
+        return INTERPRET_RUNTIME_ERROR; 
+    } 
+    double b = AS_NUMBER(pop());
+    double a = AS_NUMBER(pop()); 
+
+    push(NUMBER_VAL(a - ((int)(a / b) * b)));
+    return INTERPRET_OK;
+}
+
+static InterpretResult intDivison() {
+    if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { 
+        runtimeError("Operands must be numbers."); 
+        return INTERPRET_RUNTIME_ERROR; 
+    } 
+    double b = AS_NUMBER(pop());
+    double a = AS_NUMBER(pop()); 
+    
+    push(NUMBER_VAL(((int)a / (int)b)));
+    return INTERPRET_OK;
+}
+
 static InterpretResult run() {
     CallFrame* frame = &vm.frames[vm.frameCount - 1];
 
@@ -276,6 +300,18 @@ static InterpretResult run() {
             case OP_SUBTRACT:   BINARY_OP(NUMBER_VAL, -); break;
             case OP_MULTIPLY:   BINARY_OP(NUMBER_VAL, *); break;
             case OP_DIVIDE:     BINARY_OP(NUMBER_VAL, /); break;
+            case OP_INT_DIVIDE: {
+                if (intDivison() == INTERPRET_RUNTIME_ERROR) {
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                break;
+            }
+            case OP_MODULUS:    {
+                if (modulus() == INTERPRET_RUNTIME_ERROR) {
+                    return INTERPRET_RUNTIME_ERROR;
+                }
+                break;
+            }
             case OP_NOT:        push(BOOL_VAL(isFalsey(pop()))); break;
             case OP_NEGATE:     
                 if (!IS_NUMBER(peek(0))) {
