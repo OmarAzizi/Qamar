@@ -108,5 +108,3 @@ I have implemented support for defining and calling functions. Additionally, I h
 Running it produces the following:
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/293e9a35-71bc-450e-b56a-adbab9734f4d)
-
-
