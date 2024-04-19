@@ -285,6 +285,8 @@ static void binary(bool canAssign) {
         case TOKEN_MINUS:           emitByte(OP_SUBTRACT); break;
         case TOKEN_STAR:            emitByte(OP_MULTIPLY); break;
         case TOKEN_SLASH:           emitByte(OP_DIVIDE); break;
+        case TOKEN_BACKSLASH:       emitByte(OP_INT_DIVIDE); break;
+        case TOKEN_PERCENT:         emitByte(OP_MODULUS); break;
         default:                    return; // Unreachable
     }
 }
@@ -380,7 +382,7 @@ static void varDecleration() {
 
 /*
     An "expression statement" is simply an expression followed by a semicolon
-    Semanitcally, an expression statement evaluates the exptession and discard the results.
+    Semanitcally, an expression statement evaluates the expression and discard the results.
 */
 static void expressionStatement() {
     expression();
@@ -646,6 +648,8 @@ ParseRule rules[] = {
     [TOKEN_SEMICOLON]     = {NULL,      NULL,         PREC_NONE},
     [TOKEN_SLASH]         = {NULL,      binary,     PREC_FACTOR},
     [TOKEN_STAR]          = {NULL,      binary,     PREC_FACTOR},
+    [TOKEN_BACKSLASH]     = {NULL,      binary,     PREC_FACTOR},
+    [TOKEN_PERCENT]       = {NULL,      binary,     PREC_FACTOR},
     [TOKEN_BANG]          = {unary,     NULL,         PREC_NONE},
     [TOKEN_BANG_EQUAL]    = {NULL,      binary,   PREC_EQUALITY},
     [TOKEN_EQUAL]         = {NULL,      NULL,         PREC_NONE},
