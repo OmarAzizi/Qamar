@@ -5,7 +5,7 @@ OBJECTS = $(SOURCE:.c=.o)
 LIBS = -ledit
 
 build: $(OBJECTS)
-	$(CC) $(CFLAGS) -o onyx $(OBJECTS) $(LIBS)
+	$(CC) $(CFLAGS) -o qamar $(OBJECTS) $(LIBS)
 
 .c.o:
 	$(CC) $(CFLAGS) $(LIBS) -c $< -o $@
@@ -14,4 +14,4 @@ clean:
 	rm -rf *.o *~
 
 clean-all:
-	rm -rf *.o *~ onyx
+	rm -rf *.o *~ qamar
