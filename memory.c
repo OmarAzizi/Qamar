@@ -27,6 +27,13 @@ void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
 
 static void freeObject(Obj* object) {
     switch (object->type) {
+        case OBJ_CLOSURE: {
+        /*
+            We free only the ObjClosure itself, not the ObjFunction. That’s because the closure doesn’t own the function.
+        */
+            FREE(ObjClosure, object);
+            break;
+        }
         case OBJ_FUNCTION: {
         /*
             This switch case is responsible for freeing the ObjFunction itself as well as any other memory it owns. 
