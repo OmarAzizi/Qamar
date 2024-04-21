@@ -13,6 +13,9 @@
 /* This macro that extracts the object type tag from a given Value. */
 #define OBJ_TYPE(value)     (AS_OBJ(value)->type)
 
+#define IS_CLOSURE(value)   isObjType(value, OBJ_CLOSURE)
+#define AS_CLOSURE(value)   ((ObjClosure*)AS_OBJ(value))
+
 #define IS_FUNCTION(value)  isObjType(value, OBJ_FUNCION)
 #define AS_FUNCTION(value)  ((ObjFunction*)AS_OBJ(value))
 
@@ -30,6 +33,7 @@
 #define AS_CSTRING(value)   (((ObjString*)AS_OBJ(value))->chars)
 
 typedef enum {
+    OBJ_CLOSURE,
     OBJ_FUNCTION,
     OBJ_NATIVE,
     OBJ_STRING,
@@ -64,8 +68,17 @@ struct ObjString {
     uint32_t hash;      /* Each ObjString will store a hash, this will help in the implementation of hash tables*/
 };
 
+/*
+    We’ll wrap every function in an ObjClosure, even if the function doesn’t actually close over and capture any surrounding local variables
+*/
+typedef struct {
+    Obj obj;
+    ObjFunction* function;
+} ObjClosure;
+
+ObjClosure*  newClosure(ObjFunction* function);
 ObjFunction* newFunction();
-ObjNative* newNative(NativeFn function);
+ObjNative*   newNative(NativeFn function);
 
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
