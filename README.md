@@ -1,7 +1,8 @@
 <div align="center"> 
     <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/77540229-e31b-4ef0-b81d-15109dff74c9)">
-<div>
 
+</div>
+![Qamar (3)](https://github.com/OmarAzizi/Qamar/assets/110500643/a0c96568-5358-4aa9-b64e-038378400042)
 # Qamar
 A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
 
