@@ -1,8 +1,7 @@
 <div align="center">
-  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/77753851-c147-4ce6-aa9d-727e98856037)">
+  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/3271cf3d-60ad-434b-a910-f0b3d1a7f5d9">
 </div>
 
-![file2](https://github.com/OmarAzizi/Qamar/assets/110500643/32e94611-da12-4dbf-b539-a11be83dcaeb)
 
 
 # Qamar
