@@ -1,5 +1,5 @@
+![file](https://github.com/OmarAzizi/Qamar/assets/110500643/77753851-c147-4ce6-aa9d-727e98856037)
 
-![Qamar (3)](https://github.com/OmarAzizi/Qamar/assets/110500643/a9398bb4-7e67-40d8-899f-75bda0c3dc3d)
 
 # Qamar
 A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
