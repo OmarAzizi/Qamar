@@ -1,5 +1,5 @@
 <div align="center"> 
-    ![Qamar (2)](https://github.com/OmarAzizi/Qamar/assets/110500643/77540229-e31b-4ef0-b81d-15109dff74c9)
+    <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/77540229-e31b-4ef0-b81d-15109dff74c9)">
 <div>
 
 # Qamar
