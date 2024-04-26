@@ -355,6 +355,15 @@ static void function(FunctionType type) {
 
     ObjFunction* function = endCompiler();
     emitBytes(OP_CLOSURE, makeConstant(OBJ_VAL(function)));
+
+    for (int i = 0; i < function->upvalueCount; ++i) {
+    /*
+        Each pair of operands specifies what that upvalue captures. If the first byte is one, it captures a local variable 
+        in the enclosing function. If zero, it captures one of the function’s upvalues. The next byte is the local slot or upvalue index to capture.
+    */
+        emitByte(compiler.upvalues[i].isLocal ? 1 : 0);
+        emitByte(compiler.upvalues[i].index);
+    }
 }
 
 static void funDeclaration() {
@@ -788,6 +797,17 @@ static int resolveUpvalue(Compiler* compiler, Token* name) {
         /* If we found the local we add it to the current compiler */
         return addUpvalue(compiler, (uint8_t)local, true);
     }
+    
+    /*  a closure also captures an existing upvalue in the immediately enclosing function. */
+    int upvalue = resolveUpvalue(compiler->enclosing, name);
+    if (upvalue != -1) {
+    /*
+        Note that the new call to `addUpvalue` passes `false` for the `isLocal` parameter. This flag controls 
+        whether the closure captures a local variable or an upvalue from the surrounding function.
+    */
+        return addUpvalue(compiler, (uint8_t)upvalue, false);
+    }
+
     return -1;
 }
 
