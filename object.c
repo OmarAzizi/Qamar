@@ -19,8 +19,18 @@ static Obj* allocateObject(size_t size, ObjType type) {
 }
 
 ObjClosure* newClosure(ObjFunction* function) {
+/*
+    When we create an `ObjClosure`, we allocate an upvalue array of the proper size.
+*/
+    ObjUpvalue** upvalues = ALLOCATE(ObjUpvalue*, function->upvalueCount);
+    for (int i = 0; i < function->upvalueCount; ++i) {
+        upvalues[i] = NULL;
+    }    
+
     ObjClosure* closure = ALLOCATE_OBJ(ObjClosure, OBJ_CLOSURE);
     closure->function = function;
+    closure->upvalues = upvalues;
+    closure->upvalueCount = function->upvalueCount;
     return closure;
 }
 
