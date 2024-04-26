@@ -31,6 +31,8 @@ static void freeObject(Obj* object) {
         /*
             We free only the ObjClosure itself, not the ObjFunction. That’s because the closure doesn’t own the function.
         */
+            ObjClosure* closure = (ObjClosure*)object;
+            FREE_ARRAY(ObjUpvalue*, closure->upvalues, closure->upvalueCount);
             FREE(ObjClosure, object);
             break;
         }
@@ -53,6 +55,9 @@ static void freeObject(Obj* object) {
             FREE(ObjString, object);
             break;
         }
+        case OBJ_UPVALUE:
+            FREE(ObjUpvalue, object);
+            break;
     }
 }
 

@@ -37,6 +37,7 @@ typedef enum {
     OBJ_FUNCTION,
     OBJ_NATIVE,
     OBJ_STRING,
+    OBJ_UPVALUE
 } ObjType;
 
 struct Obj {
@@ -47,6 +48,7 @@ struct Obj {
 typedef struct {
     Obj obj;            
     int arity;          /* Number of parameters the function expects */
+    int upvalueCount;
     Chunk chunk;        /* Each function will have it's own chunk of Bytecode */
     ObjString* name;
 } ObjFunction;
@@ -68,12 +70,27 @@ struct ObjString {
     uint32_t hash;      /* Each ObjString will store a hash, this will help in the implementation of hash tables*/
 };
 
+/* This is a runtime representation of upvalues */
+typedef struct ObjUpvalue {
+    Obj obj;
+    Value* location;    /*  This field points to the closed-over variable */
+    Value closed;    
+    struct ObjUpvalue* next;    
+} ObjUpvalue;
+
 /*
     We’ll wrap every function in an ObjClosure, even if the function doesn’t actually close over and capture any surrounding local variables
 */
 typedef struct {
     Obj obj;
     ObjFunction* function;
+
+/*
+    Different closures may have different numbers of upvalues, so we need a dynamic array. 
+    The upvalues themselves are dynamically allocated too, so we end up with a double pointer—a pointer to a dynamically allocated array of pointers to upvalues.
+*/
+    ObjUpvalue** upvalues;
+    int upvalueCount;
 } ObjClosure;
 
 ObjClosure*  newClosure(ObjFunction* function);
@@ -82,6 +99,7 @@ ObjNative*   newNative(NativeFn function);
 
 ObjString* takeString(char* chars, int length);
 ObjString* copyString(const char* chars, int length);
+ObjUpvalue* newUpvalue(Value* slot);
 void printObject(Value value);
 
 static inline bool isObjType(Value value, ObjType type) {
