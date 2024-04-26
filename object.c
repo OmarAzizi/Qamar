@@ -84,6 +84,15 @@ ObjString* copyString(const char* chars, int length) {
     return allocateString(heapChars, length, hash);
 }
 
+/*
+    `newUpvalue` takes the address of the slot where the closed-over variable lives.
+*/
+ObjUpvalue* newUpvalue(Value* slot) {
+    ObjUpvalue* upvalue = ALLOCATE_OBJ(ObjUpvalue, OBJ_UPVALUE);
+    upvalue->location = slot;
+    return upvalue;
+}
+
 static void printFunction(ObjFunction* function) {
     if (function->name == NULL) {
         printf("<script>");
@@ -109,6 +118,9 @@ void printObject(Value value) {
             break;
         case OBJ_STRING:   
             printf("%s", AS_CSTRING(value)); 
+            break;
+        case OBJ_UPVALUE:
+            printf("upvalue");
             break;
     }
 }
