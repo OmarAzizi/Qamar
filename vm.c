@@ -36,6 +36,7 @@ static Value numNative(int argCount, Value* args) {
 static void resetStack() { 
     vm.stackTop = vm.stack;
     vm.frameCount = 0;
+    vm.openUpvalues = NULL;
 }
 
 static void runtimeError(const char* format, ...) {
@@ -161,8 +162,36 @@ static bool callValue(Value callee, int argCount) {
 }
 
 static ObjUpvalue* captureUpvalue(Value* local) {
+    ObjUpvalue* prevUpvalue = NULL;
+    ObjUpvalue* upvalue = vm.openUpvalues;
+    while (upvalue != NULL && upvalue->location > local) {
+        prevUpvalue = upvalue;
+        upvalue = upvalue->next;
+    }
+    
+    if (upvalue != NULL && upvalue->location == local) {
+        return upvalue;
+    }
+
     ObjUpvalue* createdUpvalue = newUpvalue(local);
+    createdUpvalue->next = upvalue;
+
+    if (prevUpvalue == NULL) {
+        vm.openUpvalues = createdUpvalue;
+    } else {
+        prevUpvalue->next = createdUpvalue;
+    }
+
     return createdUpvalue;
+}
+
+static void closeUpvalues(Value* last) {
+    while (vm.openUpvalues != NULL && vm.openUpvalues->location >= last) {
+        ObjUpvalue* upvalue = vm.openUpvalues;
+        upvalue->closed = *upvalue->location;
+        upvalue->location = &upvalue->closed;
+        vm.openUpvalues = upvalue->next;
+    }
 }
 
 /*
@@ -407,11 +436,16 @@ static InterpretResult run() {
 
                 break;
             }
+            case OP_CLOSE_UPVALUE:
+                closeUpvalues(vm.stackTop - 1);
+                pop();
+                break;
             case OP_RETURN: {
                 /* We are about to discard the function's stack window so we pop the return value and hang it */
                 Value result = pop(); 
                 
                 /* Discarding the function's CallFrame */
+                closeUpvalues(frame->slots);
                 vm.frameCount--;
 
                 if (vm.frameCount == 0) {

@@ -74,6 +74,8 @@ struct ObjString {
 typedef struct ObjUpvalue {
     Obj obj;
     Value* location;    /*  This field points to the closed-over variable */
+    Value closed;    
+    struct ObjUpvalue* next;    
 } ObjUpvalue;
 
 /*

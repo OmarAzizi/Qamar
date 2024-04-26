@@ -44,6 +44,7 @@ typedef enum {
     OP_LOOP,
     OP_CALL,            /* For function calls */
     OP_CLOSURE,
+    OP_CLOSE_UPVALUE,
     OP_RETURN,          /* return instruction*/
 } OpCode;
 

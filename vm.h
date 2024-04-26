@@ -32,6 +32,7 @@ typedef struct {
     Value* stackTop;
     Table globals;
     Table strings;
+    ObjUpvalue* openUpvalues;
     Obj* objects;   /* The VM stors a pointer to the head of the Obj's list */
 } VM;
 
