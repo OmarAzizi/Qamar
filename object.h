@@ -47,6 +47,7 @@ struct Obj {
 typedef struct {
     Obj obj;            
     int arity;          /* Number of parameters the function expects */
+    int upvalueCount;
     Chunk chunk;        /* Each function will have it's own chunk of Bytecode */
     ObjString* name;
 } ObjFunction;
