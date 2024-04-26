@@ -91,7 +91,7 @@ static char* readFile(const char* path) {
         fprintf(stderr, "Could not read file \"%s\".\n", path);
         exit(74);
     }
-    buffer[bytesRead + 1] = '\0';
+    buffer[bytesRead] = '\0';
 
     fclose(file);
     return buffer;
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
     
     if (argc == 1) repl(); // Read, Evaluate, Print, Loop
     else if (argc == 2) {
-        char* extention = strchr(argv[1], '.');
+        char* extention = strrchr(argv[1], '.');
         if (strcmp(extention + 1, "qmr") != 0) {
             fprintf(stderr, "Unexpected file format <%s>\nExpected <.qmr>", extention);
             exit(64);
