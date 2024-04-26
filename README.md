@@ -78,7 +78,7 @@ Our programming language is finally starting to look like a legitimate programmi
 ```
 
 ### `if` & `if else` Statements
-I don't feel like typing a lot now, but I implemented `if` statements and `if else`, so given this program in [if_statement.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/if_statement.ox):
+I don't feel like typing a lot now, but I implemented `if` statements and `if else`, so given this program in [if_statement.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/if_statement.qmr):
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/217714f3-3109-4f51-8457-e88c1d75bdcb)
 
@@ -87,7 +87,7 @@ It produces the following output:
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/696928bc-436b-47db-a24e-0dbb8d8ad910)
 
 ### `while` loops
-There's not much to explain here except for the fact that we've added a new feature: looping, specifically while loops, along with a new test file that contains a code snippet to verify its functionality [while_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/while_loop.ox) that counts down from 10 to 1
+There's not much to explain here except for the fact that we've added a new feature: looping, specifically while loops, along with a new test file that contains a code snippet to verify its functionality [while_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/while_loop.qmr) that counts down from 10 to 1
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/f131e4cb-0628-4a48-beb6-0939df855924)
 
@@ -96,7 +96,7 @@ It produces the following output:
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/00b742c6-f508-4005-a3d0-e81c3880912c)
 
 ### `for` loops
-This is an example of a `for` loop that prints even numbers from **1** through **10** provided in [for_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/for_loop.ox):
+This is an example of a `for` loop that prints even numbers from **1** through **10** provided in [for_loop.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/for_loop.qmr):
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/4a124fab-4566-47b6-983b-8de32bbb4e1c)
 
@@ -107,7 +107,7 @@ It produces the following output:
 With all of these control structures in place, Onyx is finally considered to be a Turing-complete programming language.
 
 ### Functions & Recursion
-I have implemented support for defining and calling functions. Additionally, I have incorporated Native Functions, which are functions defined in C that can be accessed by users (similar to standard library functions). As an example, I have implemented a `clock` function that provides the elapsed time since the program started. The following example is provided in [fib.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/fib.ox):
+I have implemented support for defining and calling functions. Additionally, I have incorporated Native Functions, which are functions defined in C that can be accessed by users (similar to standard library functions). As an example, I have implemented a `clock` function that provides the elapsed time since the program started. The following example is provided in [fib.ox](https://github.com/OmarAzizi/Onyx/blob/main/tests/fib.qmr):
 
 ![image](https://github.com/OmarAzizi/Onyx/assets/110500643/cd57da57-f4ac-44ee-aed0-12b495d39b26)
 
