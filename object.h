@@ -82,6 +82,13 @@ typedef struct ObjUpvalue {
 typedef struct {
     Obj obj;
     ObjFunction* function;
+
+/*
+    Different closures may have different numbers of upvalues, so we need a dynamic array. 
+    The upvalues themselves are dynamically allocated too, so we end up with a double pointer—a pointer to a dynamically allocated array of pointers to upvalues.
+*/
+    ObjUpvalue** upvalues;
+    int upvalueCount;
 } ObjClosure;
 
 ObjClosure*  newClosure(ObjFunction* function);
