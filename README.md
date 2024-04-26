@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/3271cf3d-60ad-434b-a910-f0b3d1a7f5d9">
+  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/3271cf3d-60ad-434b-a910-f0b3d1a7f5d9" height="100" width="100">
 </div>
 
 
