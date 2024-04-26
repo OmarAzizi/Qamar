@@ -1,8 +1,6 @@
 <div align="center">
-  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/3271cf3d-60ad-434b-a910-f0b3d1a7f5d9" height="150" width="150">
+  <img src="https://github.com/OmarAzizi/Qamar/assets/110500643/3271cf3d-60ad-434b-a910-f0b3d1a7f5d9" height="200" width="200">
 </div>
-
-
 
 # Qamar
 A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
@@ -123,5 +121,3 @@ Given this program in [native.qmr](https://github.com/OmarAzizi/Qamar/blob/main/
 It produces the following output:
 
 ![image](https://github.com/OmarAzizi/Qamar/assets/110500643/49b567fe-34cb-41ae-9c0b-8cd3de588280)
-
-
