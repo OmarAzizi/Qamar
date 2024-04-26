@@ -50,6 +50,11 @@ typedef struct {
     int  depth;  /* records the scope depth of the block where the local variable was declared */
 } Local;
 
+typedef struct {
+    uint8_t index;
+    bool isLocal;
+} Upvalue;
+
 /* This lets the compiler tell when it’s compiling top-level code versus the body of a function */
 typedef enum {
     TYPE_FUNCTION,
@@ -57,13 +62,16 @@ typedef enum {
 } FunctionType;
 
 typedef struct Compiler {
-    struct Compiler* enclosing; /* Each compiler points bacj to the compiler fo the function that encloses it all the way back to the root Compiler for top-level code */
+    struct Compiler* enclosing; /* Each compiler points back to the compiler fo the function that encloses it all the way back to the root Compiler for top-level code */
 
     ObjFunction* function;
     FunctionType type;
 
     Local locals[UINT8_COUNT];  /* Simple array of all locals that are in scope during each point in the compilation */
     int localCount;             /* Tracks how many locals are in scope*/
+
+    Upvalue upvalues[UINT8_COUNT];
+
     int scopeDepth;             /* The number of bits surrounding the current but we are compiling */
 } Compiler;
 
@@ -268,6 +276,7 @@ static int resolveLocal(Compiler* compiler, Token* name);
 static void and_(bool canAssign);
 static void markInitialized();
 static uint8_t argumentList();
+static int resolveUpvalue(Compiler* compiler, Token* name);
 
 static void binary(bool canAssign) {
     TokenType operatorType = parser.previous.type;
@@ -602,6 +611,13 @@ static void namedVariable(Token name, bool canAssign) {
         /* If we found a local we use the instructions for working with locals */
         getOp = OP_GET_LOCAL;
         setOp = OP_SET_LOCAL;
+    }
+    else if ((arg = resolveUpvalue(current, &name)) != -1) {
+    /*
+        We consider the local scopes of enclosing functions
+    */
+        getOp = OP_GET_UPVALUE;
+        setOp = OP_SET_UPVALUE;
     } else {
         /* Otherwise its a global */
         arg = identifierConstant(&name);
@@ -729,6 +745,48 @@ static int resolveLocal(Compiler* compiler, Token* name) {
                 error("Can't read local variable in its own initializer.");
            return i; 
         }
+    }
+    return -1;
+}
+
+static int addUpvalue(Compiler* compiler, uint8_t index, bool isLocal) {
+    int upvalueCount = compiler->function->upvalueCount;
+
+    for (int i = 0; i < upvalueCount; ++i) {
+        Upvalue* upvalue = &compiler->upvalues[i];
+
+    /*
+        Before we add an upvalue we first check to see if the function already has an upvalue that closes over that variable
+    */
+        if (upvalue->index == index && upvalue->isLocal == isLocal) {
+            return i;
+        }
+    }
+    
+    if (upvalueCount == UINT8_COUNT) {
+        error("Too many closure variables in function.");
+        return 0;
+    }
+
+    compiler->upvalues[upvalueCount].isLocal = isLocal;
+    compiler->upvalues[upvalueCount].index = index;
+    return compiler->function->upvalueCount++;
+}
+
+/*
+    This new `resolveUpvalue` function looks for a local variable declared in any of the surrounding functions. 
+    If it finds one, it returns an “upvalue index” for that variable. Otherwise it returns `-1` to indicate the
+    variable wasnt found.
+*/
+static int resolveUpvalue(Compiler* compiler, Token* name) {
+    /* If the enclosing compiler is `NULL` we know we reached the outermost function without finding the local variable */
+    if (compiler->enclosing == NULL) return -1;
+    
+    /* Otherwise, we try to resolve the identifier as a local variable in the enclosing compiler */
+    int local = resolveLocal(compiler->enclosing, name);
+    if (local != -1) {
+        /* If we found the local we add it to the current compiler */
+        return addUpvalue(compiler, (uint8_t)local, true);
     }
     return -1;
 }
