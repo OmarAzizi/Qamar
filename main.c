@@ -33,7 +33,7 @@ static bool checkCloseBraceAtStart(char* input, int offset) {
 }
 
 static void repl() {
-    puts("QAMAR 2.4.1");
+    puts("Qamar 2.4.1");
     puts("Press Ctrl+c to Exit\n");
     
     while (1) {
@@ -113,7 +113,7 @@ int main(int argc, char** argv) {
     else if (argc == 2) {
         char* extention = strchr(argv[1], '.');
         if (strcmp(extention + 1, "qmr") != 0) {
-            fprintf(stderr, "Unexpected file format <%s>\nExpexted <.qmr>", extention);
+            fprintf(stderr, "Unexpected file format <%s>\nExpected <.qmr>", extention);
             exit(64);
         }
         runFile(argv[1]); // Read source file
