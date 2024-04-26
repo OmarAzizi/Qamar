@@ -278,7 +278,7 @@ static InterpretResult run() {
 
         // When this flag is defined the VM disassembles and prints each instruction right before executing it    
         disassembleInstruction(&frame->closure->function->chunk, 
-                (int)(frame->ip - frame->function->chunk.code));
+                (int)(frame->ip - frame->closure->function->chunk.code));
 #endif
         uint8_t instruction;
         
@@ -433,7 +433,6 @@ static InterpretResult run() {
                         closure->upvalues[i] = frame->closure->upvalues[index];
                     }
                 }
-
                 break;
             }
             case OP_CLOSE_UPVALUE:
