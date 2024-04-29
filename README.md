@@ -3,7 +3,7 @@
 </div>
 
 # Qamar
-A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), but this was only the first part of the book.
+A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), which inspired me to created a similar programming language.
 
 ## About This Repository
 In this repository, I will be going through the second part of the book, and try to implement my own programming language and document my journey.
