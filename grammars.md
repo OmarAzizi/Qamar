@@ -20,7 +20,7 @@ declaration    → classDecl
 classDecl      → "class" IDENTIFIER ( "<" IDENTIFIER )?
                  "{" function* "}" ;
 funDecl        → "fun" function ;
-varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
+varDecl        → "var" IDENTIFIER ( "=" expression )? ";" ;
 ```
 
 ### Statements
