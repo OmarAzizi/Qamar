@@ -116,3 +116,6 @@ Given this program in [native.qmr](https://github.com/OmarAzizi/Qamar/blob/main/
 It produces the following output:
 
 ![image](https://github.com/OmarAzizi/Qamar/assets/110500643/49b567fe-34cb-41ae-9c0b-8cd3de588280)
+
+### Closures & Upvalues
+In Qamar, closures are functions that can capture and retain references to variables from their surrounding scope, enabling them to operate on these variables even after their outer functions have completed execution. Upvalues are the captured variables themselves, which are bound to a closure. Each closure maintains its own set of upvalues, allowing it to preserve the environment in which it was defined.
