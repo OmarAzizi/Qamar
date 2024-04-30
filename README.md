@@ -5,6 +5,8 @@
 # Qamar
 A while ago I went through the first part of [Crafting Interpreters](https://craftinginterpreters.com/) and implemented **Lox** in Java as the book did and shared it on GitHub in [MyLox Repository](https://github.com/OmarAzizi/MyLox), which inspired me to create a similar programming language.
 
+Note: I changed the name of this repository multiple times, I wanted to call it Onyx but the name was taken so I went with Qamar.
+
 ## About This Repository
 In this repository, I will be going through the second part of the book, and try to implement my own programming language and document my journey.
 
