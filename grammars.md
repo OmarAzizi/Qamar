@@ -2,7 +2,7 @@
 Here is a complete grammar for Qamar.
 
 ## Syntax Grammars
-The syntactic grammar is used to parse the linear sequence of tokens into the nested syntax tree structure. It starts with the first rule that matches an entire Lox program (or a single REPL entry).
+The syntactic grammar is used to parse the linear sequence of tokens into the nested syntax tree structure. It starts with the first rule that matches an entire program (or a single REPL entry).
 
 ```bash
 program        → declaration* EOF ;
