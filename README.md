@@ -120,4 +120,8 @@ It produces the following output:
 ### Closures & Upvalues
 In Qamar, closures are functions that can capture and retain references to variables from their surrounding scope, enabling them to operate on these variables even after their outer functions have completed execution. Upvalues are the captured variables themselves, which are bound to a closure. Each closure maintains its own set of upvalues, allowing it to preserve the environment in which it was defined. Given this example from [closures.qmr](https://github.com/OmarAzizi/Onyx/blob/main/tests/closures.qmr):
 
+![image](https://github.com/OmarAzizi/Qamar/assets/110500643/28f188a6-3ce7-4c03-948f-060aedfd0a8b)
+
 It produces the following output:
+
+![image](https://github.com/OmarAzizi/Qamar/assets/110500643/103463c9-3a59-4c66-97a9-14f2d3c09ed5)
