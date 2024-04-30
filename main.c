@@ -6,9 +6,6 @@
 #include "vm.h"
 #include "common.h"
 
-#include <editline/readline.h>
-#include <editline/history.h>
-
 static bool checkOpenBraceAtEnd(char* input) {
     int len = strlen(input) - 1;
     if (len + 1 == 0) 
@@ -31,6 +28,12 @@ static bool checkCloseBraceAtStart(char* input, int offset) {
 
     return input[offset] == '}' ? true : false;
 }
+
+#ifndef _WIN32
+
+#include <editline/readline.h>
+#include <editline/history.h>
+
 
 static void repl() {
     puts("Qamar 2.4.1");
@@ -67,6 +70,58 @@ static void repl() {
         free(input);
     }
 }
+
+#else
+
+static void repl() {
+    puts("Qamar 2.4.1");
+    puts("Press Ctrl+c to Exit\n");
+    
+    while (1) {
+        char input[2048];
+
+        if (!fgets(input, sizeof(input), stdin)) {
+            printf("\n");
+            break;
+        }
+        
+        int scopeCount = 0;
+
+        if (checkOpenBraceAtEnd(input)) {
+            ++scopeCount;
+            while (1) {
+                int offset = strlen(input);
+                
+                char newInput[1024];
+                
+                if (!fgets(newInput, sizeof(newInput), stdin)) {
+                    printf("\n");
+                    break;
+                }
+
+                input = realloc(input, strlen(input) + strlen(newInput) + 1); // Resize input buffer
+                strcat(input, newInput);
+                free(newInput);
+                
+                if (checkOpenBraceAtEnd(input) && checkCloseBraceAtStart(input, offset)) {
+                    continue; 
+                } else if (checkOpenBraceAtEnd(input)) {
+                    ++scopeCount;
+                } else if (checkCloseBraceAtStart(input, offset)) {
+                    --scopeCount;
+                }
+
+                if (scopeCount == 0) break;
+            }
+        }
+
+        interpret(input);
+        free(input);
+    }
+}
+
+
+#endif
 
 static char* readFile(const char* path) {
     FILE* file = fopen(path, "rb");
